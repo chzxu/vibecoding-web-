@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF 学习导航 🦞</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mascot.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">🦞</span>
+                <span>CTF 学习导航</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#top" class="active">🏠 首页<span class="shortcut-hint">1</span></a></li>
+                    <li class="nav-dropdown">
+                        <a href="#" class="nav-dropdown-toggle">📚 学习<span class="shortcut-hint">2-4</span> <span class="dd-arrow">▾</span></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="#ctf-platforms">🎮 CTF 平台</a>
+                            <a href="#security-communities">📰 安全社区</a>
+                            <a href="#web-history">📚 Web技术演化</a>
+                        </div>
+                    </li>
+                    <li class="nav-dropdown">
+                        <a href="#" class="nav-dropdown-toggle">🛠️ 新手 <span class="shortcut-hint">5-8</span><span class="dd-arrow">▾</span></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="#ctf-types">🃏 题型速查</a>
+                            <a href="#roadmap">🗺️ 菜鸡路线</a>
+                            <a href="#toolbox">🧰 工具箱</a>
+                        </div>
+                    </li>
+                    <li><a href="#ceshiya">🎯 练手项目<span class="shortcut-hint">7</span></a></li>
+                    <li><a href="#codefather">💻 CodeFather<span class="shortcut-hint">9</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <div class="main-container">
+        <main class="content fade-in" id="top">
+
+            <!-- 标题 -->
+            <h1 class="content-title">🦞 CTF 学习导航</h1>
+            <p class="content-subtitle">风雨丛中笑，兄弟心中照 · 记录你的每一次努力</p>
+
+            <!-- ==================== 🃏 CTF 题型速查 ==================== -->
+            <section id="ctf-types" class="module scroll-reveal">
+                <h2 class="module-title">🃏 CTF 题型速查</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    第一次接触 CTF 的菜鸡必看！搞懂每种题型是干什么的，才知道从哪开始下手。
+                </p>
+                <div class="type-grid">
+                    <div class="type-card type-rec-web">
+                        <div class="type-icon">🌐</div>
+                        <div class="type-name">Web</div>
+                        <div class="type-diff">
+                            <span class="tag tag-easy">简单</span>
+                            <span class="friendly friendly-high">😊 新手首选</span>
+                        </div>
+                        <p>网页漏洞找 Flag。考 SQL 注入、XSS、文件上传、SSRF 等。**最推荐新手入门方向。**</p>
+                        <div class="type-tools">Burp Suite · Chrome F12 · SQLMap</div>
+                    </div>
+                    <div class="type-card type-rec-easy">
+                        <div class="type-icon">📦</div>
+                        <div class="type-name">Misc</div>
+                        <div class="type-diff">
+                            <span class="tag tag-easy">简单~中等</span>
+                            <span class="friendly friendly-high">😊 捡漏机会多</span>
+                        </div>
+                        <p>杂项，啥都可能考：图片隐写、流量分析、编码解码、压缩包密码… 考的是脑洞和细心。</p>
+                        <div class="type-tools">StegSolve · Wireshark · binwalk</div>
+                    </div>
+                    <div class="type-card type-rec-crypto">
+                        <div class="type-icon">🔐</div>
+                        <div class="type-name">Crypto</div>
+                        <div class="type-diff">
+                            <span class="tag tag-medium">中等</span>
+                            <span class="friendly friendly-mid">🤔 看数学天赋</span>
+                        </div>
+                        <p>密码学题目。古典密码（凯撒、维吉尼亚）、现代密码（RSA、AES）、哈希碰撞。要懂一点数学基础。</p>
+                        <div class="type-tools">Python · RsaCtfTool · CyberChef</div>
+                    </div>
+                    <div class="type-card type-rec-reverse">
+                        <div class="type-icon">🔍</div>
+                        <div class="type-name">Reverse</div>
+                        <div class="type-diff">
+                            <span class="tag tag-hard">较难</span>
+                            <span class="friendly friendly-low">😰 要有耐心</span>
+                        </div>
+                        <p>逆向工程。给你一个程序，让你分析它的逻辑、找到 Flag。要会看汇编代码、脱壳、反混淆。</p>
+                        <div class="type-tools">IDA Pro · Ghidra · x64dbg</div>
+                    </div>
+                    <div class="type-card type-rec-pwn">
+                        <div class="type-icon">💥</div>
+                        <div class="type-name">Pwn</div>
+                        <div class="type-diff">
+                            <span class="tag tag-hard">困难</span>
+                            <span class="friendly friendly-low">😱 大佬向</span>
+                        </div>
+                        <p>二进制漏洞利用。栈溢出、堆攻击、格式化字符串… 要精通 C/汇编和系统原理。<strong>难度天花板。</strong></p>
+                        <div class="type-tools">pwntools · gdb · one_gadget</div>
+                    </div>
+                </div>
+                <div class="tip-box info" style="margin-top: 16px;">
+                    <div class="tip-box-title">🎯 给菜鸡的第一条建议</div>
+                    <p><strong>先死磕 Web！</strong>Web 题学到的知识（HTTP 协议、SQL 语句、JS 代码）在现实中也能用到，成就感来得快，适合建立信心。Web 玩溜了再碰 Misc 和 Crypto，最后再去 Reverse 和 Pwn。</p>
+                </div>
+            </section>
+
+            <!-- ==================== 🗺️ 菜鸡路线规划 ==================== -->
+            <section id="roadmap" class="module scroll-reveal scroll-reveal-delay-1">
+                <h2 class="module-title">🗺️ 菜鸡路线规划 <span class="roadmap-badge" id="roadmap-progress">0/0 (0%)</span></h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    一步步来，打勾就算过关！不用急，都是这么过来的 🦞
+                </p>
+                <div class="roadmap-progress-bar"><div class="roadmap-progress-fill" style="width:0%"></div></div>
+                
+                <div class="roadmap-phase">
+                    <div class="phase-header phase-week1"><span class="phase-num">第 1-2 周</span> 🌱 初来乍到</div>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r1"> 注册 BUUCTF / BugKu 账号</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r2"> 下载安装 Burp Suite</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r3"> 学会 F12 开发者工具（Network / Console）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r4"> 做 3 道 Web 签到题（不看成 WriteUp）</label>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="phase-header phase-week3"><span class="phase-num">第 3-4 周</span> 🔧 掌握工具</div>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r5"> 熟练使用 Burp Suite 抓包改包</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r6"> 学会 SQLMap 自动化注入</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r7"> 掌握 Base64 / Hex / URL 编码解码</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r8"> 做 5 道 Web 简单题 + 看 WriteUp</label>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="phase-header phase-m1"><span class="phase-num">第 2 个月</span> 🎯 体系学习</div>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r9"> 学完 SQL 注入（基础 → 报错 → 布尔 → 延时）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r10"> 学完 XSS（反射型 → 存储型 → DOM 型）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r11"> 学完文件上传漏洞（前端绕过 → MIME → 扩展名）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r12"> 接触 Misc 题（LSB 隐写 / 流量分析 / ZIP 伪加密）</label>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="phase-header phase-m3"><span class="phase-num">第 3 个月</span> 🚀 进阶提升</div>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r13"> 入门 Crypto（凯撒 → ROT → RSA 原理）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r14"> 参加一次线上 CTF 比赛（哪怕只拿 0 分）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r15"> 看懂一道 Reverse 题的 WriteUp</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r16"> 累计做 30+ 道题</label>
+                </div>
+
+                <div class="roadmap-phase">
+                    <div class="phase-header phase-m6"><span class="phase-num">第 4-6 个月</span> 💪 独当一面</div>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r17"> 能在 24h 内独立解出 3 道 Web 中等题</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r18"> 看懂 Pwn 入门题的 WriteUp</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r19"> 有自己的解题笔记（GitHub / Notion）</label>
+                    <label class="roadmap-item"><input type="checkbox" class="roadmap-checkbox" data-rid="r20"> 累计做 80+ 道题，涵盖 3 个方向以上</label>
+                </div>
+
+                <button class="action-btn" onclick="resetRoadmap()" style="margin-top:12px;">🔄 重置路线图</button>
+            </section>
+
+            <!-- ==================== 🎮 CTF 平台 ==================== -->
+            <section id="ctf-platforms" class="module scroll-reveal">
+                <h2 class="module-title">🎮 CTF 训练平台</h2>
+                <div class="sites-grid">
+                    <div class="site-card" onclick="visitSite('buuctf')">
+                        <div class="click-count" id="count-buuctf">0 次</div>
+                        <div class="site-icon">🏆</div>
+                        <div class="site-name">BUUCTF</div>
+                        <div class="site-url">buuoj.cn</div>
+                        <div class="site-desc">国内知名 CTF 训练平台，题目丰富，适合新手入门</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('bugku')">
+                        <div class="click-count" id="count-bugku">0 次</div>
+                        <div class="site-icon">🐛</div>
+                        <div class="site-name">BugKu</div>
+                        <div class="site-url">ctf.bugku.com</div>
+                        <div class="site-desc">CTF 综合训练平台，Web、逆向、Pwn 等方向全覆盖</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('adworld')">
+                        <div class="click-count" id="count-adworld">0 次</div>
+                        <div class="site-icon">⚔️</div>
+                        <div class="site-name">攻防世界</div>
+                        <div class="site-url">adworld.xctf.org.cn</div>
+                        <div class="site-desc">XCTF 联盟官方平台，高质量题目 + 专业 WriteUp</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('ctfhub')">
+                        <div class="click-count" id="count-ctfhub">0 次</div>
+                        <div class="site-icon">🚀</div>
+                        <div class="site-name">CTFHub</div>
+                        <div class="site-url">ctfhub.com</div>
+                        <div class="site-desc">技能树学习 + 在线靶场，适合系统性训练</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('qingcen')">
+                        <div class="click-count" id="count-qingcen">0 次</div>
+                        <div class="site-icon">🌸</div>
+                        <div class="site-name">青椿CTF</div>
+                        <div class="site-url">ctf.qingcen.net</div>
+                        <div class="site-desc">综合 CTF 训练平台，题目涵盖多个方向</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 📰 安全社区 ==================== -->
+            <section id="security-communities" class="module scroll-reveal">
+                <h2 class="module-title">📰 安全社区 & 资讯</h2>
+
+                <!-- 搜索栏 -->
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="site-search" placeholder="搜索站点... 按 Ctrl+F 快速定位" autocomplete="off">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+
+                <div class="sites-grid">
+                    <div class="site-card" onclick="visitSite('freebuf')">
+                        <div class="click-count" id="count-freebuf">0 次</div>
+                        <div class="site-icon">🔥</div>
+                        <div class="site-name">FreeBuf</div>
+                        <div class="site-url">freebuf.com</div>
+                        <div class="site-desc">国内知名网络安全门户，资讯 + 技术文章 + 工具</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('xz')">
+                        <div class="click-count" id="count-xz">0 次</div>
+                        <div class="site-icon">👨‍💻</div>
+                        <div class="site-name">先知社区</div>
+                        <div class="site-url">xz.aliyun.com</div>
+                        <div class="site-desc">阿里云旗下安全社区，高质量技术文章 + 实战案例</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('anquanke')">
+                        <div class="click-count" id="count-anquanke">0 次</div>
+                        <div class="site-icon">🛡️</div>
+                        <div class="site-name">安全客</div>
+                        <div class="site-url">anquanke.com</div>
+                        <div class="site-desc">安全资讯 + 技术文章 + 视频课程 + 招聘</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('seebug')">
+                        <div class="click-count" id="count-seebug">0 次</div>
+                        <div class="site-icon">🔍</div>
+                        <div class="site-name">Seebug</div>
+                        <div class="site-url">seebug.org</div>
+                        <div class="site-desc">漏洞平台 + 技术文章 + 在线靶场</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('knownsec')">
+                        <div class="click-count" id="count-knownsec">0 次</div>
+                        <div class="site-icon">🏢</div>
+                        <div class="site-name">知道创宇</div>
+                        <div class="site-url">knownsec.com</div>
+                        <div class="site-desc">安全公司官方博客，技术干货 + 行业洞察</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('baidu-src')">
+                        <div class="click-count" id="count-baidu-src">0 次</div>
+                        <div class="site-icon">🎯</div>
+                        <div class="site-name">百度 SRC</div>
+                        <div class="site-url">src.baidu.com</div>
+                        <div class="site-desc">百度安全应急响应中心，漏洞提交 + 学习</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('tencent-src')">
+                        <div class="click-count" id="count-tencent-src">0 次</div>
+                        <div class="site-icon">🐧</div>
+                        <div class="site-name">腾讯 SRC</div>
+                        <div class="site-url">src.tencent.com</div>
+                        <div class="site-desc">腾讯安全应急响应中心，漏洞众测平台</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('huoxian')">
+                        <div class="click-count" id="count-huoxian">0 次</div>
+                        <div class="site-icon">🔥</div>
+                        <div class="site-name">火线安全</div>
+                        <div class="site-url">huoxian.cn</div>
+                        <div class="site-desc">安全众测平台 + 技术社区</div>
+                    </div>
+                    <div class="site-card" onclick="visitSite('learnweb')">
+                        <div class="click-count" id="count-learnweb">0 次</div>
+                        <div class="site-icon">📖</div>
+                        <div class="site-name">Web安全学习笔记</div>
+                        <div class="site-url">讲义离线版</div>
+                        <div class="site-desc">LyleMi 著 · 包含 Web技术演化、漏洞攻防等 12 章完整内容</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 📚 Web技术演化 ==================== -->
+            <section id="web-history" class="module scroll-reveal">
+                <h2 class="module-title">📚 Web技术演化</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
+                    摘自《Web安全学习笔记》第1章 · 了解Web的前世今生，打好安全基础。
+                </p>
+
+                <div class="evo-card open" onclick="toggleEvoCard(this)">
+                    <div class="evo-card-header">
+                        <span class="arrow">▶</span>
+                        <h4>🌐 简单网站</h4>
+                        <span class="evo-tag">Web起源</span>
+                    </div>
+                    <div class="evo-card-body">
+                        <p>Web技术的最初阶段，网站内容基本都是静态的，由文字和图片组成，用户行为也简单——基本只是浏览网页。</p>
+                        <div class="evo-sub-card"><h5>📄 静态页面</h5><p>早期网站托管在 ISP 上，用表格布局，纯展示内容。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#764ba2;"><h5>🎬 多媒体阶段</h5><p>音频、视频、Flash 技术加入，网页变得生动形象。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#00ff88;"><h5>⚙️ CGI 阶段</h5><p>CGI（Common Gateway Interface）定义了Web服务器与外部程序的通信标准。PHP/ASP/JSP 等语言入场，实现动态内容生成。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#667eea;"><h5>🏗️ MVC 架构</h5><p>Model-View-Controller 分离关注点，代码复用性更好。还出现了 MVP、MVVM 等变体，以及 ORM 概念替代直接 SQL 操作。</p></div>
+                    </div>
+                </div>
+
+                <div class="evo-card" onclick="toggleEvoCard(this)">
+                    <div class="evo-card-header">
+                        <span class="arrow">▶</span>
+                        <h4>🔗 数据交互</h4>
+                        <span class="evo-tag">前后端通信</span>
+                    </div>
+                    <div class="evo-card-body">
+                        <div class="evo-sub-card"><h5>📋 简单数据交互</h5><p>早期使用 Web 表单、XML、SOAP 等方式传递数据。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#764ba2;"><h5>⚡ Ajax</h5><p>Asynchronous Javascript And XML —— 无需刷新整个页面就能更新数据，用户体验质的飞跃。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#00ff88;"><h5>🔌 RESTful</h5><p>基于 URL 组织功能，充分利用 HTTP 语义。关键特征：</p><ul><li>域名和主域名分开（<span class="code-ref">api.example.com</span>）</li><li>带版本控制（<span class="code-ref">/v1/ /v2/</span>）</li><li>用 HTTP 动词描述操作（GET/POST/PUT/DELETE）</li><li>正确使用状态码 + JSON 响应格式</li></ul></div>
+                        <div class="evo-sub-card" style="border-left-color:#667eea;"><h5>🕸️ GraphQL</h5><p>Facebook 推出的图状数据查询方式，适合复杂依赖关系的场景。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#e60012;"><h5>💾 二进制</h5><p>HTTP/2、Protocol Buffer 等高效率方式加速数据交互。</p></div>
+                    </div>
+                </div>
+
+                <div class="evo-card" onclick="toggleEvoCard(this)">
+                    <div class="evo-card-header">
+                        <span class="arrow">▶</span>
+                        <h4>🏛️ 架构演进</h4>
+                        <span class="evo-tag">系统复杂度</span>
+                    </div>
+                    <div class="evo-card-body">
+                        <p>业务发展推动架构越来越复杂，功能被拆分成不同模块。客户端也从 Web 扩展到 iOS、Android 等多端。</p>
+                        <p>数据库方面，除 MySQL/PostgreSQL 外，出现了 <span class="code-ref">Redis</span> 缓存、<span class="code-ref">Elasticsearch</span> 搜索、<span class="code-ref">Kafka</span> 消息队列等专业数据组件。</p>
+                        <div class="evo-sub-card"><h5>🔧 中间件</h5><p>用于管理计算资源和网络通信的独立程序。常见功能：过滤IP、合并端口、路由、权限校验、负载均衡、反向代理等。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#764ba2;"><h5>🌍 分布式</h5><p>单台设备无法承载海量访问，功能也被拆分到不同应用，于是出现了分布式服务框架（RPC）。</p></div>
+                    </div>
+                </div>
+
+                <div class="evo-card" onclick="toggleEvoCard(this)">
+                    <div class="evo-card-header">
+                        <span class="arrow">▶</span>
+                        <h4>☁️ 云服务</h4>
+                        <span class="evo-tag">云计算时代</span>
+                    </div>
+                    <div class="evo-card-body">
+                        <p>从"裸金属"物理机到云主机（IaaS），再到容器化、微服务、Serverless，基础设施成本大幅降低。</p>
+                        <div class="evo-sub-card"><h5>⚡ Serverless</h5><p>FaaS（函数即服务）+ BaaS（后端即服务）。用户只需上传逻辑函数，配置触发条件，云平台自动执行。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#764ba2;"><h5>🧩 微服务</h5><p>2014年由 Martin Fowler 提出。每个服务运行在自己的进程中，通过 HTTP API 通信，独立部署、版本控制、容量伸缩。</p></div>
+                        <div class="evo-sub-card" style="border-left-color:#00ff88;"><h5>🚪 API网关</h5><p>统一入口代理后端服务访问，服务治理特性对客户端透明，方便升级维护。</p></div>
+                    </div>
+                </div>
+
+                <div class="evo-card" onclick="toggleEvoCard(this)">
+                    <div class="evo-card-header">
+                        <span class="arrow">▶</span>
+                        <h4>🛠️ 软件开发</h4>
+                        <span class="evo-tag">工程实践</span>
+                    </div>
+                    <div class="evo-card-body">
+                        <div class="evo-sub-card"><h5>🔄 CI/CD</h5><p><strong>持续集成（CI）</strong>：开发人员频繁将工作集成到共享分支，减少隔离和合并冲突。</p><p style="margin-top:6px;"><strong>持续交付（CD）</strong>：将构建从测试套件部署到类生产环境，让开发人员在不增加工作量的情况下验证 Bug 修复或新特性。</p></div>
+                    </div>
+                </div>
+
+                <div class="ref-links">
+                    <h5>📎 参考链接</h5>
+                    <a href="https://arcentry.com/blog/scaling-webapps-for-newbs-and-non-techies/" target="_blank">Scaling webapps for newbs</a>
+                    <a href="https://learnku.com/articles/24050" target="_blank">GitHub Restful HTTP API 设计分解</a>
+                    <a href="file:///C:/Users/ZiXuChen/Learn-Web-Hacking/build/html/basic/history.html" target="_blank">📖 打开完整讲义页</a>
+                    <a href="file:///C:/Users/ZiXuChen/Learn-Web-Hacking/build/html/index.html" target="_blank">📚 Web安全学习笔记首页</a>
+                </div>
+            </section>
+
+            <!-- ==================== 🎯 鱼皮网络安全自学网 ==================== -->
+            <section id="ceshiya" class="module ceshiya-module scroll-reveal">
+                <h2 class="module-title">🎯 鱼皮 · 网络安全自学网</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
+                    像玩游戏一样学 Web 安全！30+ 实战漏洞关卡，涵盖逻辑漏洞、XSS、SQL注入等常见安全问题。
+                </p>
+                <div class="ceshiya-intro">
+                    <div class="ceshiya-meta">
+                        <p><strong>ceshiya</strong> 是程序员鱼皮开发的免费网络安全自学平台。<br>纯前端实现（React + Ant Design Pro），无需后端即可本地运行。<br>适合网络安全初学者、前端开发者、后端程序员、编程爱好者。</p>
+                        <p style="margin-top:12px;">📍 项目路径：<br><span class="code-ref" style="padding:4px 10px;">C:\Users\ZiXuChen\Downloads\ceshiya-master\ceshiya-master</span></p>
+                        <div class="ceshiya-btn-group">
+                            <a href="https://github.com/liyupi/ceshiya" target="_blank" class="ceshiya-btn ceshiya-btn-primary">🐟 GitHub 项目</a>
+                            <a href="#" class="ceshiya-btn ceshiya-btn-secondary" onclick="openCeshiyaDir()">📂 打开项目目录</a>
+                        </div>
+                    </div>
+                    <div class="ceshiya-cmd">
+                        <div class="cmd-title">⚡ 启动命令</div>
+                        <pre><span class="hl-comment"># 进入项目目录</span>
+cd C:\Users\ZiXuChen\Downloads\ceshiya-master\ceshiya-master
+
+<span class="hl-comment"># 双击 start.bat 一键启动</span>
+<span class="hl-cmd">start.bat</span>
+
+<span class="hl-comment"># start.bat 内容：</span>
+@echo off
+set NODE_OPTIONS=<span class="hl-cmd">--openssl-legacy-provider</span>
+npm run dev</pre>
+                        <div class="ceshiya-btn-group">
+                            <a href="file:///C:/Users/ZiXuChen/Downloads/ceshiya-master/ceshiya-master/start.bat" target="_blank" class="ceshiya-btn ceshiya-btn-green">🚀 启动项目</a>
+                            <button class="ceshiya-btn ceshiya-btn-secondary" onclick="showCeshiyaTips()">💡 使用提示</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ceshiya-features">
+                    <div class="ceshiya-feat"><div class="icon">🎮</div><h5>闯关式学习</h5><p>每关一个漏洞，通关即掌握</p></div>
+                    <div class="ceshiya-feat"><div class="icon">🛡️</div><h5>XSS 注入</h5><p>跨站脚本攻击实战</p></div>
+                    <div class="ceshiya-feat"><div class="icon">💾</div><h5>SQL 注入</h5><p>数据库注入漏洞练习</p></div>
+                    <div class="ceshiya-feat"><div class="icon">🧩</div><h5>逻辑漏洞</h5><p>业务逻辑缺陷挖掘</p></div>
+                    <div class="ceshiya-feat"><div class="icon">⚡</div><h5>纯前端</h5><p>无需后端，开箱即用</p></div>
+                </div>
+            </section>
+
+            <!-- ==================== 🧰 内置工具箱 ==================== -->
+            <section id="toolbox" class="module scroll-reveal">
+                <h2 class="module-title">🧰 内置工具箱</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    刷题时常用的小工具，不用再切出去百度了！
+                </p>
+                <div class="toolbox-layout">
+                    <div class="toolbox-input-area">
+                        <label class="toolbox-label">📥 输入内容</label>
+                        <textarea id="toolbox-input" class="toolbox-textarea" placeholder="粘贴你要转换的文本..." spellcheck="false"></textarea>
+                    </div>
+                    <div class="toolbox-buttons">
+                        <div class="toolbox-group">
+                            <div class="toolbox-group-title">🔤 编码 / 解码</div>
+                            <div class="toolbox-btn-row">
+                                <button class="tb-btn" onclick="toolboxTab('b64e')">B64 编码</button>
+                                <button class="tb-btn" onclick="toolboxTab('b64d')">B64 解码</button>
+                                <button class="tb-btn" onclick="toolboxTab('hexe')">Hex 编码</button>
+                                <button class="tb-btn" onclick="toolboxTab('hexd')">Hex 解码</button>
+                            </div>
+                        </div>
+                        <div class="toolbox-group">
+                            <div class="toolbox-group-title">🔄 转换</div>
+                            <div class="toolbox-btn-row">
+                                <button class="tb-btn" onclick="toolboxTab('rot13')">ROT13</button>
+                                <button class="tb-btn" onclick="toolboxTab('urle')">URL 编码</button>
+                                <button class="tb-btn" onclick="toolboxTab('urld')">URL 解码</button>
+                                <button class="tb-btn tb-btn-danger" onclick="clearToolbox()">🗑️ 清空</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toolbox-output-area">
+                        <label class="toolbox-label">📤 输出结果 <button class="tb-btn tb-btn-sm" onclick="copyToolboxOutput()">📋 复制</button></label>
+                        <div class="toolbox-output" id="toolbox-output">点击上面的按钮查看结果</div>
+                        <div class="toolbox-extra"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 💻 CodeFather ==================== -->
+            <section id="codefather" class="module codefather-module scroll-reveal">
+                <h2 class="module-title">💻 CodeFather - 程序员鱼皮</h2>
+                <div class="codefather-intro">
+                    <div class="codefather-header">
+                        <div class="codefather-icon">🐟</div>
+                        <div class="codefather-info">
+                            <h3>程序员鱼皮 · 编程导航</h3>
+                            <p>B 站知名 UP 主 | 前腾讯工程师 | 编程学习引路人</p>
+                        </div>
+                    </div>
+                    <p class="codefather-desc">鱼皮创建的编程学习社区，提供项目实战、学习路线、求职指导等内容。<br>适合编程零基础到进阶，涵盖 Java、前端、Python 等主流技术栈。</p>
+                    <a href="https://www.codefather.cn/" target="_blank" class="codefather-btn">🚀 访问 CodeFather</a>
+                </div>
+                <div class="codefather-features">
+                    <div class="feature-card"><div class="feature-icon">📚</div><h4>学习路线</h4><p>系统化的编程学习路径</p></div>
+                    <div class="feature-card"><div class="feature-icon">💼</div><h4>项目实战</h4><p>真实企业级项目练手</p></div>
+                    <div class="feature-card"><div class="feature-icon">🎯</div><h4>求职指导</h4><p>简历优化 + 面试技巧</p></div>
+                    <div class="feature-card"><div class="feature-icon">👥</div><h4>学习社区</h4><p>和万千码农一起成长</p></div>
+                </div>
+                <div class="click-record">
+                    <span>访问次数：</span>
+                    <span class="stat-value" id="count-codefather">0</span>
+                </div>
+            </section>
+
+            <!-- ==================== 📊 热力图 + 数据 ==================== -->
+            <section class="module scroll-reveal">
+                <h2 class="module-title">📊 GitHub 风格热力图</h2>
+                <div class="heatmap-wrapper">
+                    <div class="heatmap-months" id="heatmap-months"></div>
+                    <div class="heatmap-container">
+                        <div class="heatmap-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+                        <div class="heatmap" id="heatmap"></div>
+                    </div>
+                </div>
+                <div class="heatmap-legend">
+                    <span>Less</span>
+                    <div class="legend-colors">
+                        <div class="legend-color" style="background: var(--level-0)"></div>
+                        <div class="legend-color" style="background: var(--level-1)"></div>
+                        <div class="legend-color" style="background: var(--level-2)"></div>
+                        <div class="legend-color" style="background: var(--level-3)"></div>
+                        <div class="legend-color" style="background: var(--level-4)"></div>
+                    </div>
+                    <span>More</span>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item"><span>总点击次数：</span><span class="stat-value" id="total-clicks">0</span></div>
+                    <div class="stat-item"><span>连续打卡：</span><span class="stat-value" id="streak-days">0</span><span>天</span></div>
+                    <div class="stat-item"><span>最近点击：</span><span class="stat-value" id="last-click">-</span></div>
+                </div>
+
+                <div class="action-group">
+                    <button class="action-btn action-btn-success" onclick="exportData()">💾 导出备份</button>
+                    <button class="action-btn" onclick="showData()">📊 查看数据</button>
+                    <button class="action-btn action-btn-danger" onclick="resetData()">🔄 重置数据</button>
+                </div>
+                <input type="file" id="import-file-input" class="hidden-file-input" accept=".json" onchange="handleFileImport(event)">
+                <button class="action-btn" onclick="importData()" style="margin-top:8px;">📂 导入备份</button>
+            </section>
+
+            <!-- ==================== 🏆 排行榜 ==================== -->
+            <section class="module scroll-reveal scroll-reveal-delay-1">
+                <h2 class="module-title">🏆 站点排行榜</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    点击最多的 Top 10 站点，点击可直接跳转～
+                </p>
+                <div class="leaderboard" id="leaderboard-list"></div>
+            </section>
+
+            <!-- ==================== 🏁 CTF 赛事倒计时 ==================== -->
+            <section class="module scroll-reveal">
+                <h2 class="module-title">🏁 近期 CTF 赛事</h2>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    哪怕只参加一次，也比观望一百次强！
+                </p>
+                <div id="countdown-list"></div>
+            </section>
+
+            <!-- ==================== 💡 CTF 学习建议 ==================== -->
+            <section class="module scroll-reveal scroll-reveal-delay-2">
+                <h2 class="module-title">💡 CTF 学习建议</h2>
+                <div class="tip-box info">
+                    <div class="tip-box-title">🎯 给刷题的兄弟</div>
+                    <p>CTF 比赛是网络安全最好的实践方式。刚开始做题可能会觉得很难，这很正常。<strong>每道题都是一个新的知识点</strong>，做不出来就看 WriteUp，学会了就是自己的。</p>
+                </div>
+                <div class="stage-cards">
+                    <div class="stage-card stage-1"><h3>📚 第一阶段 - Web 基础</h3><p>HTTP 协议、SQL 注入、XSS、文件上传</p><span class="time">⏱️ 1-2 个月</span></div>
+                    <div class="stage-card stage-2"><h3>🔐 第二阶段 - 密码学</h3><p>Base64、RSA、AES、古典密码</p><span class="time">⏱️ 1-2 个月</span></div>
+                    <div class="stage-card stage-3"><h3>🔍 第三阶段 - 逆向工程</h3><p>汇编语言、调试工具、算法分析</p><span class="time">⏱️ 2-3 个月</span></div>
+                    <div class="stage-card stage-4"><h3>🎮 第四阶段 - 综合实战</h3><p>AWD 对抗、CTF 比赛、团队配合</p><span class="time">⏱️ 持续练习</span></div>
+                </div>
+                <div class="tip-box warning" style="margin-top: 1.5rem;">
+                    <div class="tip-box-title">⚠️ 法律红线 - 必须遵守！</div>
+                    <p><strong>只能在授权平台练习！</strong>未经授权的渗透测试是违法的。</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>✅ BUUCTF、BugKu、攻防世界等官方平台</li>
+                        <li>✅ 自己搭建的靶场环境（DVWA、SQLi-Labs）</li>
+                        <li>✅ 授权的 SRC 平台（阿里、腾讯、百度等）</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;"><strong>记住：技术无罪，但使用技术的人要有底线！</strong></p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <p>Made with 🦞 by 丛中笑 | 风雨丛中笑，兄弟心中照</p>
+        <p style="font-size:12px; margin-top:4px; color:var(--text-muted, #5a6270);">按 <kbd style="background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;font-size:11px;">?</kbd> 查看快捷键</p>
+    </footer>
+
+    <!-- 吉祥物 -->
+    <div class="mascot-container" id="mascot">
+        <div class="mascot-body">
+            <img src="../菜鸟网安/assets/avatar.png" alt="丛中笑" class="mascot-avatar" onerror="this.style.display='none'">
+            <div class="mascot-status"></div>
+        </div>
+        <div class="mascot-bubble" id="mascot-bubble">
+            <div class="mascot-header">
+                <span class="mascot-name">🦞 丛中笑</span>
+                <span class="mascot-status-badge">在线</span>
+            </div>
+            <div class="mascot-text" id="mascot-text">兄弟，今天刷了几道题？加油！我看好你！💪</div>
+            <div class="mascot-actions">
+                <button class="mascot-btn mascot-btn-primary" onclick="mascotAction('encourage')">💪 鼓励我</button>
+                <button class="mascot-btn mascot-btn-secondary" onclick="mascotAction('tip')">💡 给建议</button>
+                <button class="mascot-btn mascot-btn-tertiary" onclick="mascotAction('about')">ℹ️ 关于</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部 -->
+    <button class="back-to-top" id="back-to-top">↑</button>
+
+    <!-- Toast 通知 -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- 提示工具 -->
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+
+    <!-- 快捷键提示模态框 -->
+    <div class="shortcuts-modal-overlay" id="shortcuts-modal" onclick="if(event.target===this)this.classList.remove('show')">
+        <div class="shortcuts-modal">
+            <h3>⌨️ 键盘快捷键 <button class="close-btn" onclick="toggleShortcutsModal()">×</button></h3>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>1</kbd></div>
+                <span class="shortcut-desc">首页</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>2</kbd></div>
+                <span class="shortcut-desc">CTF 平台</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>3</kbd></div>
+                <span class="shortcut-desc">安全社区</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>4</kbd></div>
+                <span class="shortcut-desc">Web技术演化</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>5</kbd></div>
+                <span class="shortcut-desc">题型速查</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>6</kbd></div>
+                <span class="shortcut-desc">菜鸡路线</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>7</kbd></div>
+                <span class="shortcut-desc">练手项目</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>8</kbd></div>
+                <span class="shortcut-desc">工具箱</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>9</kbd></div>
+                <span class="shortcut-desc">CodeFather</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>F</kbd></div>
+                <span class="shortcut-desc">聚焦搜索</span>
+            </div>
+            <div class="shortcut-row">
+                <div class="kbd-group"><kbd>?</kbd></div>
+                <span class="shortcut-desc">打开/关闭快捷键面板</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== JS ========== -->
+    <script src="js/main.js"></script>
+</body>
+</html>

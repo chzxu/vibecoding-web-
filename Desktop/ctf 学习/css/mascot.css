@@ -1,0 +1,263 @@
+/* 互动导师 - 悬浮宠物组件 */
+/* 丛中笑 🦞 使用真实头像 */
+
+.mascot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mascot-container:hover {
+    transform: scale(1.05);
+}
+
+.mascot-body {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #e60012 0%, #b3000f 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(230, 0, 18, 0.5);
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+    border: 3px solid white;
+    overflow: hidden;
+}
+
+.mascot-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* 如果图片加载失败，显示备用 emoji */
+.mascot-body:has(.mascot-avatar[style*="display: none"]) {
+    font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mascot-body:has(.mascot-avatar[style*="display: none"])::after {
+    content: '🦞';
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.mascot-bubble {
+    position: absolute;
+    bottom: 110px;
+    right: 0;
+    background: white;
+    padding: 18px 22px;
+    border-radius: 15px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+    min-width: 250px;
+    max-width: 350px;
+    display: none;
+    animation: slideUp 0.3s ease;
+    border: 2px solid #e60012;
+}
+
+.mascot-bubble.show {
+    display: block;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mascot-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 30px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-bottom: 2px solid #e60012;
+    border-right: 2px solid #e60012;
+    transform: rotate(45deg);
+}
+
+.mascot-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mascot-name {
+    font-weight: bold;
+    color: #e60012;
+    font-size: 16px;
+}
+
+.mascot-status-badge {
+    background: #00d97e;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+.mascot-text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.mascot-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.mascot-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.mascot-btn-primary {
+    background: linear-gradient(135deg, #e60012 0%, #b3000f 100%);
+    color: white;
+}
+
+.mascot-btn-primary:hover {
+    background: linear-gradient(135deg, #b3000f 0%, #80000a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(230, 0, 18, 0.3);
+}
+
+.mascot-btn-secondary {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.mascot-btn-secondary:hover {
+    background: #e8e8e8;
+    transform: translateY(-2px);
+}
+
+.mascot-btn-tertiary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.mascot-btn-tertiary:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+}
+
+/* 状态指示器 */
+.mascot-status {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: #00d97e;
+    border-radius: 50%;
+    border: 2px solid white;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 217, 126, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(0, 217, 126, 0); }
+}
+
+/* 表情动画 */
+.mascot-happy {
+    animation: happy 0.5s ease;
+}
+
+@keyframes happy {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1) rotate(10deg); }
+}
+
+.mascot-thinking {
+    animation: thinking 1s ease;
+}
+
+@keyframes thinking {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .mascot-container {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .mascot-body {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .mascot-bubble {
+        bottom: 85px;
+        min-width: 200px;
+        max-width: 280px;
+        padding: 14px 18px;
+    }
+    
+    .mascot-actions {
+        flex-direction: column;
+    }
+    
+    .mascot-btn {
+        width: 100%;
+    }
+}
+
+/* 对话历史 */
+.mascot-history {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.mascot-history-item {
+    padding: 8px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.mascot-history-item.user {
+    background: #e7f3ff;
+    border-left: 3px solid #2c7be5;
+}
+
+.mascot-history-item.mascot {
+    background: #fff8e7;
+    border-left: 3px solid #e60012;
+}
