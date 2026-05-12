@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐧 Linux 指令学院</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* ===================== RESET & BASE ===================== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #0a0e14;
+    --bg-panel: #0f1620;
+    --bg-card: #131b28;
+    --bg-card-hover: #182234;
+    --border: #1e2a3a;
+    --border-glow: #2d4a6a;
+    --text-primary: #d4e1f0;
+    --text-secondary: #7a8fa8;
+    --text-muted: #4a5a6e;
+    --accent-green: #00ff9d;
+    --accent-cyan: #00d4ff;
+    --accent-amber: #ffb347;
+    --accent-pink: #ff6b8a;
+    --accent-purple: #a277ff;
+    --accent-red: #ff4d4d;
+    --terminal-bg: #060a10;
+    --terminal-text: #00ff9d;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+    --shadow-glow: 0 0 40px rgba(0,255,157,0.05);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans SC', 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0,255,157,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(162,119,255,0.02) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+
+  /* ===================== SCROLLBAR ===================== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* ===================== HEADER ===================== */
+  header {
+    position: relative;
+    padding: 60px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,255,157,0.04) 0%, transparent 100%);
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    transform: translate(-50%, -30%);
+    background: radial-gradient(circle, rgba(0,255,157,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .glow-line {
+    position: absolute;
+    bottom: -1px;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    opacity: 0.5;
+  }
+
+  .logo {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 20px rgba(0,255,157,0.15));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .site-title {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .site-sub {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-top: 8px;
+    font-weight: 300;
+    letter-spacing: 2px;
+  }
+
+  .site-sub span {
+    color: var(--accent-green);
+    font-weight: 500;
+  }
+
+  /* ===================== TERMINAL DEMO BAR ===================== */
+  .demo-bar {
+    max-width: 720px;
+    margin: 28px auto 0;
+    background: var(--terminal-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-align: left;
+    box-shadow: var(--shadow);
+  }
+
+  .demo-bar .bar-dots {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .demo-bar .bar-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .demo-bar .bar-dots span:nth-child(1) { background: #ff5f57; }
+  .demo-bar .bar-dots span:nth-child(2) { background: #ffbd2e; }
+  .demo-bar .bar-dots span:nth-child(3) { background: #28c840; }
+
+  .demo-bar .bar-title {
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    margin-left: auto;
+    padding-right: 8px;
+  }
+
+  .demo-bar .terminal-content {
+    padding: 16px 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--terminal-text);
+    min-height: 120px;
+  }
+
+  .demo-bar .terminal-content .line {
+    opacity: 0;
+    animation: typeIn 0.5s ease forwards;
+  }
+  .demo-bar .terminal-content .line:nth-child(1) { animation-delay: 0.2s; }
+  .demo-bar .terminal-content .line:nth-child(2) { animation-delay: 0.8s; }
+  .demo-bar .terminal-content .line:nth-child(3) { animation-delay: 1.4s; }
+  .demo-bar .terminal-content .line:nth-child(4) { animation-delay: 2.0s; }
+  .demo-bar .terminal-content .line:nth-child(5) { animation-delay: 2.6s; }
+  .demo-bar .terminal-content .line:nth-child(6) { animation-delay: 3.2s; }
+
+  @keyframes typeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .demo-bar .terminal-content .prompt { color: var(--accent-cyan); }
+  .demo-bar .terminal-content .comment { color: var(--text-muted); }
+  .demo-bar .terminal-content .output { color: var(--text-secondary); }
+  .demo-bar .terminal-content .cmd { color: var(--accent-green); }
+  .demo-bar .terminal-content .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--accent-green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  .cursor-static {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--accent-green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ===================== NAV TABS ===================== */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .nav-tab {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+
+  .nav-tab:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+    background: rgba(0,255,157,0.06);
+  }
+
+  .nav-tab.active {
+    border-color: var(--accent-green);
+    color: var(--bg-deep);
+    background: var(--accent-green);
+    font-weight: 600;
+  }
+
+  /* ===================== SEARCH ===================== */
+  .search-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 24px 24px 0;
+  }
+
+  .search-box {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 14px 48px 14px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    color: var(--text-primary);
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: var(--transition);
+  }
+
+  .search-box input:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 20px rgba(0,255,157,0.08);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-muted);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .search-box .search-icon {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  /* ===================== MAIN GRID ===================== */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+
+  .category-section {
+    margin-bottom: 48px;
+    display: none;
+  }
+
+  .category-section.visible {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .category-header .cat-icon {
+    font-size: 28px;
+  }
+
+  .category-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .category-header .cat-badge {
+    margin-left: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ===================== COMMAND CARDS ===================== */
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .cmd-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cmd-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent-green);
+    opacity: 0;
+    transition: var(--transition);
+  }
+
+  .cmd-card:hover {
+    border-color: var(--border-glow);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .cmd-card:hover::before {
+    opacity: 0.8;
+  }
+
+  .cmd-card.expanded {
+    border-color: var(--accent-green);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .cmd-card.expanded::before {
+    opacity: 1;
+    background: var(--accent-green);
+    box-shadow: 0 0 12px var(--accent-green);
+  }
+
+  .cmd-card .cmd-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent-green);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .cmd-card .cmd-name .copy-btn {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Noto Sans SC', sans-serif;
+    opacity: 0;
+  }
+
+  .cmd-card:hover .copy-btn {
+    opacity: 1;
+  }
+
+  .cmd-card .cmd-name .copy-btn:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+    background: rgba(0,255,157,0.1);
+  }
+
+  .cmd-card .cmd-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 4px;
+    line-height: 1.6;
+  }
+
+  .cmd-card .cmd-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+    opacity: 0;
+  }
+
+  .cmd-card.expanded .cmd-detail {
+    max-height: 600px;
+    opacity: 1;
+    margin-top: 14px;
+  }
+
+  .cmd-detail .detail-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .cmd-detail .detail-label:first-child {
+    margin-top: 0;
+  }
+
+  .cmd-detail .syntax-block {
+    background: var(--terminal-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--accent-amber);
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+
+  .cmd-detail .syntax-block .hl-green { color: var(--accent-green); }
+  .cmd-detail .syntax-block .hl-cyan { color: var(--accent-cyan); }
+  .cmd-detail .syntax-block .hl-pink { color: var(--accent-pink); }
+  .cmd-detail .syntax-block .hl-muted { color: var(--text-muted); }
+  .cmd-detail .syntax-block .hl-purple { color: var(--accent-purple); }
+  .cmd-detail .syntax-block .hl-red { color: var(--accent-red); }
+
+  .cmd-detail .example-block {
+    background: var(--terminal-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+
+  .cmd-detail .example-block .prompt-symbol {
+    color: var(--accent-cyan);
+  }
+
+  .cmd-detail .example-block .comment-line {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .cmd-detail .example-block .output-line {
+    color: var(--text-secondary);
+  }
+
+  .cmd-detail .tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(0,255,157,0.05);
+    border: 1px solid rgba(0,255,157,0.12);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--accent-green);
+    margin-top: 10px;
+  }
+
+  .cmd-detail .tip .tip-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  /* ===================== TAG COLORS ===================== */
+  .cat-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .tag-file     { background: rgba(0,255,157,0.12); color: var(--accent-green); }
+  .tag-perm     { background: rgba(255,179,71,0.12); color: var(--accent-amber); }
+  .tag-proc     { background: rgba(0,212,255,0.12); color: var(--accent-cyan); }
+  .tag-net      { background: rgba(162,119,255,0.12); color: var(--accent-purple); }
+  .tag-text     { background: rgba(255,107,138,0.12); color: var(--accent-pink); }
+  .tag-pkg      { background: rgba(255,77,77,0.12); color: var(--accent-red); }
+  .tag-disk     { background: rgba(0,255,157,0.12); color: var(--accent-green); }
+  .tag-archive  { background: rgba(255,179,71,0.12); color: var(--accent-amber); }
+  .tag-user     { background: rgba(0,212,255,0.12); color: var(--accent-cyan); }
+  .tag-system   { background: rgba(162,119,255,0.12); color: var(--accent-purple); }
+  .tag-ssh      { background: rgba(255,107,138,0.12); color: var(--accent-pink); }
+  .tag-find     { background: rgba(0,212,255,0.12); color: var(--accent-cyan); }
+
+  /* ===================== NO RESULTS ===================== */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .no-results.visible { display: block; }
+  .no-results .nr-icon { font-size: 48px; margin-bottom: 16px; }
+  .no-results p { font-size: 16px; }
+
+  /* ===================== KEYBOARD SHORTCUT ===================== */
+  .kbd-hint {
+    text-align: center;
+    padding: 8px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: 'Fira Code', monospace;
+    margin-top: -18px;
+    margin-bottom: 10px;
+  }
+
+  .kbd-hint kbd {
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-card);
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 768px) {
+    header { padding: 40px 16px 28px; }
+    .logo { font-size: 48px; }
+    .cmd-grid { grid-template-columns: 1fr; }
+    .nav-tabs { padding: 14px 12px; gap: 4px; }
+    .nav-tab { font-size: 12px; padding: 6px 14px; }
+    main { padding: 20px 14px 60px; }
+    .demo-bar .terminal-content { font-size: 12px; padding: 12px 14px; }
+  }
+
+  /* ===================== FOOTER ===================== */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  footer a {
+    color: var(--accent-green);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* ===================== TOAST ===================== */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent-green);
+    color: var(--bg-deep);
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,255,157,0.3);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ===================== INTRO PANEL ===================== */
+  .intro-panel {
+    max-width: 720px;
+    margin: 24px auto 0;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+
+  .intro-panel p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .intro-panel .highlight {
+    color: var(--accent-green);
+    font-weight: 500;
+  }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .stats-bar .stat {
+    text-align: center;
+  }
+
+  .stats-bar .stat-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-green);
+  }
+
+  .stats-bar .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <div class="logo">🐧</div>
+  <h1 class="site-title">Linux 指令学院</h1>
+  <p class="site-sub">从 <span>零</span> 到 <span>命令行高手</span> · 交互式学习手册</p>
+
+  <!-- Terminal Demo -->
+  <div class="demo-bar">
+    <div style="display:flex;align-items:center;">
+      <div class="bar-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="bar-title">bash — 80×24</div>
+    </div>
+    <div class="terminal-content">
+      <div class="line"><span class="prompt">$ </span><span class="cmd">whoami</span></div>
+      <div class="line"><span class="output">→ 你已经是 Linux 冒险者了</span></div>
+      <div class="line"><span class="prompt">$ </span><span class="cmd">ls -la</span></div>
+      <div class="line"><span class="output">→ 发现 10 个命令分类 · 60+ 精选指令</span></div>
+      <div class="line"><span class="prompt">$ </span><span class="cmd">./start-learning.sh</span></div>
+      <div class="line"><span class="output">→ 点击任意卡片展开详情 ↓</span><span class="cursor"></span></div>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro-panel">
+    <p>这不仅仅是一份命令列表。<br>每一张卡片都包含 <span class="highlight">语法结构</span>、<span class="highlight">实用示例</span> 和 <span class="highlight">避坑提示</span>。<br>点击卡片展开详情，点击 <span class="highlight">📋</span> 复制命令。</p>
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num">10</div>
+        <div class="stat-label">分类</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">60+</div>
+        <div class="stat-label">指令</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">💻</div>
+        <div class="stat-label">即学即用</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glow-line"></div>
+</header>
+
+<!-- ===================== NAV TABS ===================== -->
+<nav class="nav-tabs" id="navTabs">
+  <button class="nav-tab active" data-cat="all">🔥 全部</button>
+  <button class="nav-tab" data-cat="file">📁 文件操作</button>
+  <button class="nav-tab" data-cat="perm">🔐 权限管理</button>
+  <button class="nav-tab" data-cat="proc">⚙️ 进程管理</button>
+  <button class="nav-tab" data-cat="net">🌐 网络相关</button>
+  <button class="nav-tab" data-cat="text">📝 文本处理</button>
+  <button class="nav-tab" data-cat="pkg">📦 包管理</button>
+  <button class="nav-tab" data-cat="disk">💾 磁盘/存储</button>
+  <button class="nav-tab" data-cat="archive">🗜️ 压缩归档</button>
+  <button class="nav-tab" data-cat="user">👤 用户管理</button>
+  <button class="nav-tab" data-cat="system">🖥️ 系统信息</button>
+</nav>
+
+<!-- ===================== SEARCH ===================== -->
+<div class="search-wrap">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="搜索指令名称或说明… 比如 ls, grep, 权限…">
+    <span class="search-icon">🔍</span>
+  </div>
+</div>
+
+<div class="kbd-hint">
+  <kbd>Ctrl</kbd> + <kbd>F</kbd> 快速搜索 · 点击卡片展开/收起
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<main id="mainContent">
+
+  <!-- ========== 文件操作 ========== -->
+  <section class="category-section visible" data-cat="file">
+    <div class="category-header">
+      <span class="cat-icon">📁</span>
+      <h2 style="color:var(--accent-green)">文件操作</h2>
+      <span class="cat-badge">8 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="ls">
+        <div class="cmd-name">ls <button class="copy-btn" data-cmd="ls">📋 复制</button></div>
+        <div class="cmd-desc">列出目录内容 —— 最常用的命令之一</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">ls</span> [选项] [路径]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-l</span>  长格式显示（权限、大小、日期）<br>
+            <span class="hl-cyan">-a</span>  显示所有文件（包括 . 开头的隐藏文件）<br>
+            <span class="hl-cyan">-h</span>  人类可读大小（配合 -l 使用）<br>
+            <span class="hl-cyan">-t</span>  按时间排序<br>
+            <span class="hl-cyan">-S</span>  按大小排序
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 详细列出当前目录</span><br>
+            <span class="prompt-symbol">$ </span>ls -lah<br>
+            <span class="output-line">drwxr-xr-x  5 user user 4.0K May 12 10:00 .<br>-rw-r--r--  1 user user  256 May 12 09:30 notes.txt</span><br><br>
+            <span class="comment-line"># 按时间倒序</span><br>
+            <span class="prompt-symbol">$ </span>ls -lt
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>ls -la</strong> 是你的"开盲盒"命令 —— 想看看目录里有什么，就用它！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="cd">
+        <div class="cmd-name">cd <button class="copy-btn" data-cmd="cd">📋 复制</button></div>
+        <div class="cmd-desc">切换当前工作目录</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">cd</span> [路径]</div>
+          <div class="detail-label">🔧 常用用法</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">cd ~</span>    回到 home 目录<br>
+            <span class="hl-cyan">cd /</span>     回到根目录<br>
+            <span class="hl-cyan">cd ..</span>    返回上一级目录<br>
+            <span class="hl-cyan">cd -</span>     返回上一个目录
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>cd /var/log<br>
+            <span class="prompt-symbol">$ </span>cd ..<br>
+            <span class="prompt-symbol">$ </span>cd ~/Projects/my-app
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>cd -</strong> 太实用了 — 在最后两个目录之间跳转，做运维的都知道！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="pwd">
+        <div class="cmd-name">pwd <button class="copy-btn" data-cmd="pwd">📋 复制</button></div>
+        <div class="cmd-desc">显示当前工作目录的绝对路径</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">pwd</span></div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>pwd<br>
+            <span class="output-line">/home/zixu/projects/linux-course</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>迷路时第一个想到的命令！<strong>pwd</strong> = print working directory。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="mkdir">
+        <div class="cmd-name">mkdir <button class="copy-btn" data-cmd="mkdir">📋 复制</button></div>
+        <div class="cmd-desc">创建新目录</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">mkdir</span> [选项] 目录名</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-p</span>  递归创建父目录（不存在则自动创建）<br>
+            <span class="hl-cyan">-v</span>  显示创建过程
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 创建单层目录</span><br>
+            <span class="prompt-symbol">$ </span>mkdir myproject<br><br>
+            <span class="comment-line"># 递归创建多层目录（不用一层层建了！）</span><br>
+            <span class="prompt-symbol">$ </span>mkdir -p projects/2026/05/笔记
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>-p</strong> 参数是神技 — 建多层目录只用一条命令。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="rm">
+        <div class="cmd-name">rm <button class="copy-btn" data-cmd="rm">📋 复制</button></div>
+        <div class="cmd-desc">删除文件或目录（⚠️ 危险！不可恢复）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">rm</span> [选项] 目标</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-r</span>  递归删除（删除目录必加）<br>
+            <span class="hl-cyan">-f</span>  强制删除，不提示<br>
+            <span class="hl-red">-rf</span>  ⚠️ 递归强制删除（慎用！）
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 删除文件</span><br>
+            <span class="prompt-symbol">$ </span>rm old-file.txt<br><br>
+            <span class="comment-line"># 删除目录（含所有内容）</span><br>
+            <span class="prompt-symbol">$ </span>rm -rf temp-folder
+          </div>
+          <div class="tip">
+            <span class="tip-icon">⚠️</span>
+            <span><strong>rm -rf /</strong> 是最著名的"删库跑路"命令 —— 千万别乱试！（没有 -f 的话会一路问你确认）</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="cp">
+        <div class="cmd-name">cp <button class="copy-btn" data-cmd="cp">📋 复制</button></div>
+        <div class="cmd-desc">复制文件或目录</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">cp</span> [选项] 来源 目标</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-r</span>  递归复制（复制目录必加）<br>
+            <span class="hl-cyan">-i</span>  覆盖前询问<br>
+            <span class="hl-cyan">-v</span>  显示详细过程<br>
+            <span class="hl-cyan">-u</span>  只复制更新的文件
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 复制文件</span><br>
+            <span class="prompt-symbol">$ </span>cp report.txt backup/ <br><br>
+            <span class="comment-line"># 复制整个目录</span><br>
+            <span class="prompt-symbol">$ </span>cp -r my-project/ my-project-backup/
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="mv">
+        <div class="cmd-name">mv <button class="copy-btn" data-cmd="mv">📋 复制</button></div>
+        <div class="cmd-desc">移动文件 / 重命名文件</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">mv</span> [选项] 来源 目标</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-i</span>  覆盖前询问<br>
+            <span class="hl-cyan">-v</span>  显示过程
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 重命名</span><br>
+            <span class="prompt-symbol">$ </span>mv old-name.txt new-name.txt<br><br>
+            <span class="comment-line"># 移动到其他目录</span><br>
+            <span class="prompt-symbol">$ </span>mv report.pdf ~/Documents/
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>mv</strong> 即 rename — Linux 没有专门的重命名命令，mv 就是！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="touch">
+        <div class="cmd-name">touch <button class="copy-btn" data-cmd="touch">📋 复制</button></div>
+        <div class="cmd-desc">创建空文件 / 更新文件时间戳</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">touch</span> 文件名</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 创建空文件</span><br>
+            <span class="prompt-symbol">$ </span>touch notes.md index.html app.py<br><br>
+            <span class="comment-line"># 一次创建多个文件</span><br>
+            <span class="prompt-symbol">$ </span>touch {a,b,c}.txt
+            <span class="output-line">  → 创建 a.txt b.txt c.txt</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>文件已存在时 <strong>touch</strong> 不会覆盖内容，只更新时间戳。超安全！</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 权限管理 ========== -->
+  <section class="category-section" data-cat="perm">
+    <div class="category-header">
+      <span class="cat-icon">🔐</span>
+      <h2 style="color:var(--accent-amber)">权限管理</h2>
+      <span class="cat-badge">5 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="chmod">
+        <div class="cmd-name">chmod <button class="copy-btn" data-cmd="chmod">📋 复制</button></div>
+        <div class="cmd-desc">修改文件或目录的权限</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">chmod</span> [权限] 文件</div>
+          <div class="detail-label">🔧 权限表示法</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">数字法</span>：<span class="hl-pink">chmod 755</span> → rwxr-xr-x<br>
+            &nbsp;&nbsp;r=4, w=2, x=1&nbsp;&nbsp;所有者|组|其他人<br>
+            <span class="hl-cyan">符号法</span>：<span class="hl-pink">chmod u+x</span> → 给所有者加执行权限
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 数字法：所有者全部权限，组和其他只读+执行</span><br>
+            <span class="prompt-symbol">$ </span>chmod 755 script.sh<br><br>
+            <span class="comment-line"># 符号法：给所有人加执行权限</span><br>
+            <span class="prompt-symbol">$ </span>chmod +x run.sh
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>755</strong> = 脚本标准权限 | <strong>644</strong> = 普通文件标准权限 | <strong>600</strong> = 私密文件</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="chown">
+        <div class="cmd-name">chown <button class="copy-btn" data-cmd="chown">📋 复制</button></div>
+        <div class="cmd-desc">修改文件所有者（需 root）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">chown</span> [用户]:[组] 文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 修改所有者</span><br>
+            <span class="prompt-symbol">$ </span>sudo chown zixu config.yml<br><br>
+            <span class="comment-line"># 同时修改所有者和组</span><br>
+            <span class="prompt-symbol">$ </span>sudo chown zixu:developers app/
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>用 <strong>-R</strong> 递归修改目录内所有文件：chown -R user:group dir/</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="chgrp">
+        <div class="cmd-name">chgrp <button class="copy-btn" data-cmd="chgrp">📋 复制</button></div>
+        <div class="cmd-desc">修改文件所属组</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">chgrp</span> 组名 文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>sudo chgrp developers config.yml<br>
+            <span class="prompt-symbol">$ </span>chgrp -R www-data /var/www/
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="umask">
+        <div class="cmd-name">umask <button class="copy-btn" data-cmd="umask">📋 复制</button></div>
+        <div class="cmd-desc">设置新建文件的默认权限掩码</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">umask</span> [掩码值]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 查看当前 umask</span><br>
+            <span class="prompt-symbol">$ </span>umask<br>
+            <span class="output-line">0022</span><br><br>
+            <span class="comment-line"># 设置新建文件默认为 755（目录）</span><br>
+            <span class="prompt-symbol">$ </span>umask 022
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>umask = 777 - 目标权限。默认 022 意味着文件 644、目录 755。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="sudo">
+        <div class="cmd-name">sudo <button class="copy-btn" data-cmd="sudo">📋 复制</button></div>
+        <div class="cmd-desc">以超级用户权限执行命令</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo</span> 命令</div>
+          <div class="detail-label">🔧 相关用法</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">sudo -i</span>  切换到 root shell<br>
+            <span class="hl-cyan">sudo -u user</span>  以指定用户身份执行
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>sudo apt update<br>
+            <span class="prompt-symbol">$ </span>sudo systemctl restart nginx<br>
+            <span class="output-line">[sudo] password for zixu:</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">⚠️</span>
+            <span>不是 root 用户！是"借权限执行一条命令"。<strong>sudo !!</strong> 用上一条命令加 sudo。</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 进程管理 ========== -->
+  <section class="category-section" data-cat="proc">
+    <div class="category-header">
+      <span class="cat-icon">⚙️</span>
+      <h2 style="color:var(--accent-cyan)">进程管理</h2>
+      <span class="cat-badge">6 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="ps">
+        <div class="cmd-name">ps <button class="copy-btn" data-cmd="ps">📋 复制</button></div>
+        <div class="cmd-desc">显示当前进程快照</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">ps</span> [选项]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">ps aux</span>  显示所有进程（BSD 风格）<br>
+            <span class="hl-cyan">ps -ef</span>  显示所有进程（标准风格）<br>
+            <span class="hl-cyan">ps -u user</span>  查看指定用户的进程
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>ps aux | grep nginx<br>
+            <span class="output-line">root     12345  0.0  0.1  12345  6789 ?  Ss  10:00   0:00 nginx: master<br>www-data 12346  0.0  0.1  12345  6789 ?  S   10:00   0:00 nginx: worker</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>ps aux | grep &lt;进程名&gt;</strong> — 查找进程的经典组合拳。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="top">
+        <div class="cmd-name">top <button class="copy-btn" data-cmd="top">📋 复制</button></div>
+        <div class="cmd-desc">实时查看系统进程和资源占用</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">top</span></div>
+          <div class="detail-label">🔧 交互快捷键</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">q</span>  退出<br>
+            <span class="hl-cyan">k</span>  杀死进程（输入 PID）<br>
+            <span class="hl-cyan">M</span>  按内存排序<br>
+            <span class="hl-cyan">P</span>  按 CPU 排序<br>
+            <span class="hl-cyan">1</span>  显示每个 CPU 核心
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>top -u zixu</strong> 只查看你的进程。<strong>htop</strong> 是 top 的增强版（更漂亮），需要 apt install。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="kill">
+        <div class="cmd-name">kill <button class="copy-btn" data-cmd="kill">📋 复制</button></div>
+        <div class="cmd-desc">发送信号终止进程</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">kill</span> [信号] PID</div>
+          <div class="detail-label">🔧 常用信号</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">kill -15</span>  SIGTERM — 礼貌请求退出（默认）<br>
+            <span class="hl-cyan">kill -9</span>   SIGKILL — 强制杀死（⚠️ 无法被捕获）<br>
+            <span class="hl-cyan">kill -1</span>   SIGHUP — 重新加载配置
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 先找到 PID</span><br>
+            <span class="prompt-symbol">$ </span>ps aux | grep firefox<br>
+            <span class="output-line">zixu  23456  ...  firefox</span><br>
+            <span class="comment-line"># 先试试礼貌退出</span><br>
+            <span class="prompt-symbol">$ </span>kill 23456<br>
+            <span class="comment-line"># 不行？上大招</span><br>
+            <span class="prompt-symbol">$ </span>kill -9 23456
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>先 <strong>kill -15</strong>（给人家保存机会），不行再 <strong>kill -9</strong>。先礼后兵！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="bg_fg">
+        <div class="cmd-name">bg / fg <button class="copy-btn" data-cmd="bg">📋 复制</button></div>
+        <div class="cmd-desc">将进程放到后台/前台运行</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block">
+            <span class="hl-green">command &amp;</span>  启动时直接放后台<br>
+            <span class="hl-green">Ctrl + Z</span>  暂停当前进程<br>
+            <span class="hl-green">bg</span>  将暂停的进程放到后台<br>
+            <span class="hl-green">fg</span>  将后台进程调到前台
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 后台运行</span><br>
+            <span class="prompt-symbol">$ </span>python server.py &amp;<br>
+            <span class="output-line">[1] 12345</span><br><br>
+            <span class="comment-line"># 暂停后放后台</span><br>
+            <span class="prompt-symbol">$ </span>python long_task.py<br>
+            <span class="comment-line">(按 Ctrl+Z)</span><br>
+            <span class="output-line">[2]+  已停止  python long_task.py</span><br>
+            <span class="prompt-symbol">$ </span>bg<br>
+            <span class="output-line">[2]+ python long_task.py &amp;</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>jobs</strong> 查看所有后台任务，<strong>fg %1</strong> 把任务 1 调到前台。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="nohup">
+        <div class="cmd-name">nohup <button class="copy-btn" data-cmd="nohup">📋 复制</button></div>
+        <div class="cmd-desc">退出终端后继续运行命令</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">nohup</span> 命令 &amp;</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 关掉终端也不会停</span><br>
+            <span class="prompt-symbol">$ </span>nohup python train_model.py &amp;<br>
+            <span class="output-line">nohup: ignoring input and appending output to 'nohup.out'</span><br><br>
+            <span class="comment-line"># 指定输出日志</span><br>
+            <span class="prompt-symbol">$ </span>nohup ./backup.sh &gt; backup.log 2&gt;&amp;1 &amp;
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>nohup</strong> + <strong>&amp;</strong> = 在服务器上跑长时间任务的黄金搭档！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="systemctl">
+        <div class="cmd-name">systemctl <button class="copy-btn" data-cmd="systemctl">📋 复制</button></div>
+        <div class="cmd-desc">管理系统服务（systemd）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">systemctl</span> [操作] [服务名]</div>
+          <div class="detail-label">🔧 常用操作</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">start</span>    启动服务<br>
+            <span class="hl-cyan">stop</span>     停止服务<br>
+            <span class="hl-cyan">restart</span>  重启服务<br>
+            <span class="hl-cyan">enable</span>   开机自启<br>
+            <span class="hl-cyan">status</span>   查看状态
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>sudo systemctl start nginx<br>
+            <span class="prompt-symbol">$ </span>sudo systemctl enable docker<br>
+            <span class="prompt-symbol">$ </span>sudo systemctl status sshd
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>装完软件第一步：<strong>systemctl enable --now service</strong> = 启动 + 开机自启一步到位！</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 网络相关 ========== -->
+  <section class="category-section" data-cat="net">
+    <div class="category-header">
+      <span class="cat-icon">🌐</span>
+      <h2 style="color:var(--accent-purple)">网络相关</h2>
+      <span class="cat-badge">6 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="ping">
+        <div class="cmd-name">ping <button class="copy-btn" data-cmd="ping">📋 复制</button></div>
+        <div class="cmd-desc">测试网络连通性和延迟</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">ping</span> [选项] 目标</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-c N</span>  发送 N 次后停止<br>
+            <span class="hl-cyan">-i N</span>  每 N 秒发一次
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>ping -c 4 baidu.com<br>
+            <span class="output-line">PING baidu.com (39.156.66.10) 56(84) bytes of data.<br>64 bytes from 39.156.66.10: icmp_seq=1 ttl=50 time=4.23 ms<br>64 bytes from 39.156.66.10: icmp_seq=2 ttl=50 time=3.98 ms</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>ping 通 = 网络没问题。Windows 下 ping 默认无限次，Linux 也是 — 加 <strong>-c</strong> 控制。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="curl">
+        <div class="cmd-name">curl <button class="copy-btn" data-cmd="curl">📋 复制</button></div>
+        <div class="cmd-desc">传输数据工具（HTTP 请求瑞士军刀）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">curl</span> [选项] URL</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-o file</span>  保存到文件<br>
+            <span class="hl-cyan">-L</span>  跟随重定向<br>
+            <span class="hl-cyan">-H</span>  自定义请求头<br>
+            <span class="hl-cyan">-d data</span>  POST 数据<br>
+            <span class="hl-cyan">-v</span>  显示详细请求过程
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># GET 请求看响应</span><br>
+            <span class="prompt-symbol">$ </span>curl https://api.github.com<br><br>
+            <span class="comment-line"># 下载文件</span><br>
+            <span class="prompt-symbol">$ </span>curl -o linux教程.pdf https://example.com/book.pdf<br><br>
+            <span class="comment-line"># POST JSON 数据</span><br>
+            <span class="prompt-symbol">$ </span>curl -X POST -H "Content-Type: application/json" -d '{"name":"zixu"}' https://api.example.com/users
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>curl ifconfig.me</strong> 可以查看你的公网 IP！超实用。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="wget">
+        <div class="cmd-name">wget <button class="copy-btn" data-cmd="wget">📋 复制</button></div>
+        <div class="cmd-desc">非交互式网络下载器</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">wget</span> [选项] URL</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-O file</span>  指定输出文件名<br>
+            <span class="hl-cyan">-c</span>  断点续传<br>
+            <span class="hl-cyan">-r</span>  递归下载
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>wget https://example.com/big-file.zip<br>
+            <span class="prompt-symbol">$ </span>wget -c https://example.com/large.iso  <span class="output-line"># 续传</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>curl vs wget：curl 更灵活（支持各种协议），wget 更擅长下载大文件（断点续传）。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="netstat">
+        <div class="cmd-name">netstat <button class="copy-btn" data-cmd="netstat">📋 复制</button></div>
+        <div class="cmd-desc">查看网络连接、路由表、端口监听</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">netstat</span> [选项]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-tlnp</span>  查看 TCP 监听端口（附进程名）<br>
+            <span class="hl-cyan">-ulnp</span>  查看 UDP 监听端口<br>
+            <span class="hl-cyan">-an</span>  显示所有连接
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 看谁在监听什么端口（排错必备）</span><br>
+            <span class="prompt-symbol">$ </span>sudo netstat -tlnp<br>
+            <span class="output-line">Proto Recv-Q Send-Q Local Address   Foreign Address  State   PID/Program<br>tcp   0      0      0.0.0.0:80      0.0.0.0:*        LISTEN  1234/nginx<br>tcp   0      0      0.0.0.0:22      0.0.0.0:*        LISTEN  567/sshd</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>新系统用 <strong>ss</strong> 代替 netstat（更快），用法类似：<strong>ss -tlnp</strong>。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="ssh">
+        <div class="cmd-name">ssh <button class="copy-btn" data-cmd="ssh">📋 复制</button></div>
+        <div class="cmd-desc">远程登录到另一台机器</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">ssh</span> [选项] user@host</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-p port</span>  指定端口（默认 22）<br>
+            <span class="hl-cyan">-i key</span>  使用密钥文件登录<br>
+            <span class="hl-cyan">-v</span>  调试模式
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>ssh admin@192.168.1.100<br>
+            <span class="prompt-symbol">$ </span>ssh -p 2222 -i ~/.ssh/id_rsa root@vps.example.com
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>配置 <strong>~/.ssh/config</strong> 可以免输地址和端口，用别名登录：<br><strong>Host myserver<br>&nbsp;&nbsp;HostName 1.2.3.4<br>&nbsp;&nbsp;User root<br>&nbsp;&nbsp;Port 2222</strong><br>之后 <strong>ssh myserver</strong> 即可！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="scp">
+        <div class="cmd-name">scp <button class="copy-btn" data-cmd="scp">📋 复制</button></div>
+        <div class="cmd-desc">基于 SSH 的安全文件传输</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">scp</span> [选项] 来源 目标</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 本地文件传到服务器</span><br>
+            <span class="prompt-symbol">$ </span>scp myfile.zip user@server:/home/user/<br><br>
+            <span class="comment-line"># 从服务器下载文件</span><br>
+            <span class="prompt-symbol">$ </span>scp user@server:/var/log/nginx/access.log .<br><br>
+            <span class="comment-line"># 递归复制目录</span><br>
+            <span class="prompt-symbol">$ </span>scp -r project/ user@server:~
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>-r</strong> = 目录传输。想更快？用 <strong>rsync</strong> 传输大项目（支持增量）。</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 文本处理 ========== -->
+  <section class="category-section" data-cat="text">
+    <div class="category-header">
+      <span class="cat-icon">📝</span>
+      <h2 style="color:var(--accent-pink)">文本处理</h2>
+      <span class="cat-badge">7 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="grep">
+        <div class="cmd-name">grep <button class="copy-btn" data-cmd="grep">📋 复制</button></div>
+        <div class="cmd-desc">在文件中搜索匹配的文本（文本搜索之王）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">grep</span> [选项] "模式" 文件</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-i</span>  忽略大小写<br>
+            <span class="hl-cyan">-r</span>  递归搜索目录<br>
+            <span class="hl-cyan">-n</span>  显示行号<br>
+            <span class="hl-cyan">-v</span>  反向匹配（不含模式的）<br>
+            <span class="hl-cyan">-c</span>  只计数匹配行数
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 在日志中找 error</span><br>
+            <span class="prompt-symbol">$ </span>grep -i "error" /var/log/syslog<br><br>
+            <span class="comment-line"># 递归搜索所有 .py 文件中的函数定义</span><br>
+            <span class="prompt-symbol">$ </span>grep -rn "def " --include="*.py" .<br><br>
+            <span class="comment-line"># 排除注释行</span><br>
+            <span class="prompt-symbol">$ </span>grep -v "^#" config.conf
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>grep -rn "关键词" .</strong> 是你最快找到代码位置的方法！grep 支持正则表达式。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="sed">
+        <div class="cmd-name">sed <button class="copy-btn" data-cmd="sed">📋 复制</button></div>
+        <div class="cmd-desc">流编辑器 —— 文本替换、删除、插入</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sed</span> [选项] '命令' 文件</div>
+          <div class="detail-label">🔧 常用命令</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">s/旧/新/g</span>  全局替换<br>
+            <span class="hl-cyan">/模式/d</span>  删除匹配行<br>
+            <span class="hl-cyan">Nd</span>  删除第 N 行
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 替换文本（输出到屏幕）</span><br>
+            <span class="prompt-symbol">$ </span>sed 's/old-text/new-text/g' file.txt<br><br>
+            <span class="comment-line"># 直接修改文件（用 -i）</span><br>
+            <span class="prompt-symbol">$ </span>sed -i 's/127.0.0.1/0.0.0.0/g' config.yml<br><br>
+            <span class="comment-line"># 删除空行</span><br>
+            <span class="prompt-symbol">$ </span>sed '/^$/d' messy.txt
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>sed -i.bak</strong> 会在修改前备份原文件（生成 file.bak），强烈推荐养成习惯！</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="awk">
+        <div class="cmd-name">awk <button class="copy-btn" data-cmd="awk">📋 复制</button></div>
+        <div class="cmd-desc">强大的文本分析工具（按列处理）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">awk</span> '{print $N}' 文件</div>
+          <div class="detail-label">🔧 常用模式</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">$0</span>  整行<br>
+            <span class="hl-cyan">$1</span>  第 1 列<br>
+            <span class="hl-cyan">$NF</span>  最后一列<br>
+            <span class="hl-cyan">NR</span>  行号<br>
+            <span class="hl-cyan">-F,</span>  指定分隔符（默认空格/制表符）
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 打印第 1 列和第 3 列</span><br>
+            <span class="prompt-symbol">$ </span>awk '{print $1, $3}' data.txt<br><br>
+            <span class="comment-line"># 以逗号分隔的 CSV：打印第 2 列</span><br>
+            <span class="prompt-symbol">$ </span>awk -F',' '{print $2}' users.csv<br><br>
+            <span class="comment-line"># 条件过滤：打印第 3 列大于 100 的行</span><br>
+            <span class="prompt-symbol">$ </span>awk '$3 > 100 {print $0}' scores.txt
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>awk</strong> 其实就是 Linux 上的 Excel！按列处理数据，配合 grep/sed 三件套无敌。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="cat">
+        <div class="cmd-name">cat <button class="copy-btn" data-cmd="cat">📋 复制</button></div>
+        <div class="cmd-desc">连接文件并输出到屏幕</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">cat</span> [选项] 文件</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-n</span>  显示行号<br>
+            <span class="hl-cyan">-b</span>  只给非空行编号
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 查看文件</span><br>
+            <span class="prompt-symbol">$ </span>cat README.md<br><br>
+            <span class="comment-line"># 合并文件</span><br>
+            <span class="prompt-symbol">$ </span>cat part1.txt part2.txt &gt; combined.txt
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>文件太大？用 <strong>less</strong> 分页查看（<strong>less bigfile.log</strong>，按 q 退出）。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="head_tail">
+        <div class="cmd-name">head / tail <button class="copy-btn" data-cmd="head">📋 复制</button></div>
+        <div class="cmd-desc">查看文件的开头 / 结尾部分</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block">
+            <span class="hl-green">head</span> [-n 行数] 文件<br>
+            <span class="hl-green">tail</span> [-n 行数] 文件
+          </div>
+          <div class="detail-label">🔧 tail 特殊模式</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">tail -f</span>  实时跟踪文件新增内容（看日志神器！）
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 看文件头 5 行</span><br>
+            <span class="prompt-symbol">$ </span>head -5 data.csv<br><br>
+            <span class="comment-line"># 看文件尾 10 行</span><br>
+            <span class="prompt-symbol">$ </span>tail -10 /var/log/syslog<br><br>
+            <span class="comment-line"># 实时追踪日志（运维必备）</span><br>
+            <span class="prompt-symbol">$ </span>tail -f /var/log/nginx/access.log
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>tail -f</strong> 是运维人员的"直播"工具 — 实时看日志进来，按 <strong>Ctrl+C</strong> 退出。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="sort">
+        <div class="cmd-name">sort <button class="copy-btn" data-cmd="sort">📋 复制</button></div>
+        <div class="cmd-desc">对文件内容排序</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sort</span> [选项] 文件</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-n</span>  按数字排序<br>
+            <span class="hl-cyan">-r</span>  反向排序<br>
+            <span class="hl-cyan">-u</span>  去重（同 uniq）
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 按数字排序</span><br>
+            <span class="prompt-symbol">$ </span>sort -n scores.txt<br><br>
+            <span class="comment-line"># 先排序再去重再计数（经典组合）</span><br>
+            <span class="prompt-symbol">$ </span>sort tags.txt | uniq -c | sort -rn
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="wc">
+        <div class="cmd-name">wc <button class="copy-btn" data-cmd="wc">📋 复制</button></div>
+        <div class="cmd-desc">统计文件行数、单词数、字节数</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">wc</span> [选项] 文件</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-l</span>  只统计行数<br>
+            <span class="hl-cyan">-w</span>  只统计单词数<br>
+            <span class="hl-cyan">-c</span>  只统计字节数
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>wc -l app.py<br>
+            <span class="output-line">231 app.py</span><br><br>
+            <span class="comment-line"># 代码行数统计</span><br>
+            <span class="prompt-symbol">$ </span>find . -name "*.py" | xargs wc -l | tail -1<br>
+            <span class="output-line">1534 总行数</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>wc -l</strong> 是统计文件行数最快的方式，没有之一！</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 包管理 ========== -->
+  <section class="category-section" data-cat="pkg">
+    <div class="category-header">
+      <span class="cat-icon">📦</span>
+      <h2 style="color:var(--accent-red)">包管理</h2>
+      <span class="cat-badge">4 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="apt">
+        <div class="cmd-name">apt <button class="copy-btn" data-cmd="apt">📋 复制</button></div>
+        <div class="cmd-desc">Debian/Ubuntu 软件包管理</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo apt</span> [操作] 包名</div>
+          <div class="detail-label">🔧 常用操作</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">update</span>        更新软件源列表<br>
+            <span class="hl-cyan">upgrade</span>       升级所有可升级的包<br>
+            <span class="hl-cyan">install pkg</span>   安装软件包<br>
+            <span class="hl-cyan">remove pkg</span>    移除软件包<br>
+            <span class="hl-cyan">search kw</span>     搜索软件包
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 经典操作（先更新再安装）</span><br>
+            <span class="prompt-symbol">$ </span>sudo apt update &amp;&amp; sudo apt install htop -y<br><br>
+            <span class="comment-line"># 搜索包</span><br>
+            <span class="prompt-symbol">$ </span>apt search web server
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>习惯养成：<strong>sudo apt update</strong> 先于 <strong>sudo apt install</strong> — 源没更新可能装到旧版。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="dpkg">
+        <div class="cmd-name">dpkg <button class="copy-btn" data-cmd="dpkg">📋 复制</button></div>
+        <div class="cmd-desc">Debian 包底层管理工具</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">dpkg</span> [选项] .deb文件</div>
+          <div class="detail-label">🔧 常用操作</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-i file.deb</span>    安装本地 deb 包<br>
+            <span class="hl-cyan">-r pkg</span>         移除包（保留配置）<br>
+            <span class="hl-cyan">-l</span>              列出已安装包<br>
+            <span class="hl-cyan">-L pkg</span>          查看包安装了哪些文件
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>sudo dpkg -i google-chrome.deb<br>
+            <span class="prompt-symbol">$ </span>dpkg -l | grep nginx
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>dpkg 不处理依赖，装本地包后依赖用了 <strong>sudo apt install -f</strong> 修复。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="yum">
+        <div class="cmd-name">yum / dnf <button class="copy-btn" data-cmd="yum">📋 复制</button></div>
+        <div class="cmd-desc">RedHat/CentOS/Fedora 包管理</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo yum</span> (或 dnf) [操作] 包名</div>
+          <div class="detail-label">🔧 常用操作</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">install nginx</span>  安装<br>
+            <span class="hl-cyan">remove nginx</span>   卸载<br>
+            <span class="hl-cyan">search kw</span>      搜索<br>
+            <span class="hl-cyan">list installed</span>  列出已安装
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>sudo yum install -y nginx<br>
+            <span class="prompt-symbol">$ </span>sudo dnf groupinstall "Development Tools"
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>CentOS 8+ 用 <strong>dnf</strong> 替代 yum，命令用法几乎相同，但 dnf 更快。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="pip">
+        <div class="cmd-name">pip <button class="copy-btn" data-cmd="pip">📋 复制</button></div>
+        <div class="cmd-desc">Python 包管理器（安装第三方库）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">pip</span> [操作] 包名</div>
+          <div class="detail-label">🔧 常用操作</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">install pkg</span>  安装包<br>
+            <span class="hl-cyan">uninstall pkg</span>  卸载<br>
+            <span class="hl-cyan">freeze</span>  列出所有已安装包（生成 requirements.txt）<br>
+            <span class="hl-cyan">list</span>  列出已安装包
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 安装库</span><br>
+            <span class="prompt-symbol">$ </span>pip install requests beautifulsoup4<br><br>
+            <span class="comment-line"># 导出依赖（项目必备）</span><br>
+            <span class="prompt-symbol">$ </span>pip freeze &gt; requirements.txt
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>强烈推荐用 <strong>venv</strong> 或 <strong>conda</strong> 创建虚拟环境，避免包冲突！<br><strong>python -m venv myenv && source myenv/bin/activate</strong></span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 磁盘/存储 ========== -->
+  <section class="category-section" data-cat="disk">
+    <div class="category-header">
+      <span class="cat-icon">💾</span>
+      <h2 style="color:var(--accent-green)">磁盘 / 存储</h2>
+      <span class="cat-badge">4 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="df">
+        <div class="cmd-name">df <button class="copy-btn" data-cmd="df">📋 复制</button></div>
+        <div class="cmd-desc">查看磁盘分区空间使用情况</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">df</span> [选项]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-h</span>  人类可读格式（GB/MB）<br>
+            <span class="hl-cyan">-T</span>  显示文件系统类型
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>df -h<br>
+            <span class="output-line">Filesystem      Size  Used Avail Use% Mounted on<br>/dev/sda1       117G   45G   72G  39% /<br>/dev/sdb1       1.8T  1.2T  600G  67% /data</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="du">
+        <div class="cmd-name">du <button class="copy-btn" data-cmd="du">📋 复制</button></div>
+        <div class="cmd-desc">查看文件/目录占用的磁盘空间</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">du</span> [选项] [路径]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-h</span>  人类可读<br>
+            <span class="hl-cyan">-s</span>  只显示总计<br>
+            <span class="hl-cyan">--max-depth=N</span>  只显示 N 层深度
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 当前目录总大小</span><br>
+            <span class="prompt-symbol">$ </span>du -sh<br>
+            <span class="output-line">2.3G    .</span><br><br>
+            <span class="comment-line"># 每个子目录占用（一级深度）</span><br>
+            <span class="prompt-symbol">$ </span>du -h --max-depth=1 | sort -rh<br>
+            <span class="output-line">1.5G    ./node_modules<br>456M    ./dist<br> 12M    ./src</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>du -sh *</strong> 看当前目录每个子项的大小，配合 <strong>sort -rh</strong> 按大小排序。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="mount">
+        <div class="cmd-name">mount <button class="copy-btn" data-cmd="mount">📋 复制</button></div>
+        <div class="cmd-desc">挂载文件系统（U盘、ISO等）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">mount</span> [设备] [挂载点]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 挂载 U 盘</span><br>
+            <span class="prompt-symbol">$ </span>sudo mount /dev/sdb1 /mnt/usb<br><br>
+            <span class="comment-line"># 挂载 ISO 镜像</span><br>
+            <span class="prompt-symbol">$ </span>sudo mount -o loop ubuntu.iso /mnt/iso
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>用完记得 <strong>umount /mnt/usb</strong>（没拼错，是 umount 不是 unmount！）。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="fdisk">
+        <div class="cmd-name">fdisk <button class="copy-btn" data-cmd="fdisk">📋 复制</button></div>
+        <div class="cmd-desc">磁盘分区管理工具</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo fdisk</span> [选项] /dev/sdX</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 查看分区表</span><br>
+            <span class="prompt-symbol">$ </span>sudo fdisk -l<br>
+            <span class="output-line">Disk /dev/sda: 117.2 GiB<br>Device     Boot   Start       End   Sectors  Size Id Type<br>/dev/sda1  *       2048 245596159 245594112  117G 83 Linux</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>查看磁盘信息用 <strong>lsblk</strong> 更直观：树形结构显示所有磁盘和分区。</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 压缩归档 ========== -->
+  <section class="category-section" data-cat="archive">
+    <div class="category-header">
+      <span class="cat-icon">🗜️</span>
+      <h2 style="color:var(--accent-amber)">压缩 / 归档</h2>
+      <span class="cat-badge">4 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="tar">
+        <div class="cmd-name">tar <button class="copy-btn" data-cmd="tar">📋 复制</button></div>
+        <div class="cmd-desc">归档工具（打包 + 压缩，Linux 最常用）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">tar</span> [选项] 输出文件 输入文件</div>
+          <div class="detail-label">🔧 参数速记</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">c</span> 创建 &nbsp; <span class="hl-cyan">x</span> 解压 &nbsp; <span class="hl-cyan">z</span> gzip &nbsp; <span class="hl-cyan">j</span> bz2 &nbsp; <span class="hl-cyan">v</span> 显示过程 &nbsp; <span class="hl-cyan">f</span> 指定文件名
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 打包并压缩（.tar.gz）</span><br>
+            <span class="prompt-symbol">$ </span>tar -czvf project.tar.gz my-project/<br><br>
+            <span class="comment-line"># 解压 .tar.gz</span><br>
+            <span class="prompt-symbol">$ </span>tar -xzvf project.tar.gz<br><br>
+            <span class="comment-line"># 解压到指定目录</span><br>
+            <span class="prompt-symbol">$ </span>tar -xzvf project.tar.gz -C /tmp/
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>记忆口诀：<strong>tar -czvf</strong> = 打包，<strong>tar -xzvf</strong> = 解包。<br>扩展名对应：.tar.gz → z，.tar.bz2 → j，.tar.xz → J</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="gzip">
+        <div class="cmd-name">gzip <button class="copy-btn" data-cmd="gzip">📋 复制</button></div>
+        <div class="cmd-desc">压缩单个文件（gunzip 解压）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block">
+            <span class="hl-green">gzip</span> 文件 &nbsp;&nbsp;= 压缩（源文件替换为 .gz）<br>
+            <span class="hl-green">gunzip</span> 文件.gz &nbsp;&nbsp;= 解压
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>gzip biglog.txt<br>
+            <span class="output-line">→ biglog.txt.gz 出现（原文件消失）</span><br><br>
+            <span class="prompt-symbol">$ </span>gunzip biglog.txt.gz<br>
+            <span class="output-line">→ biglog.txt 恢复</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>gzip -k</strong> 保留原文件（不删除）。<strong>zcat</strong> 可以直接查看 .gz 文件内容。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="zip">
+        <div class="cmd-name">zip / unzip <button class="copy-btn" data-cmd="zip">📋 复制</button></div>
+        <div class="cmd-desc">跨平台压缩格式（Windows 通用）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block">
+            <span class="hl-green">zip</span> [选项] 输出.zip 输入<br>
+            <span class="hl-green">unzip</span> 文件.zip
+          </div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-r</span>  递归压缩目录<br>
+            <span class="hl-cyan">-d dir</span>  解压到指定目录
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>zip -r project.zip project/<br>
+            <span class="prompt-symbol">$ </span>unzip project.zip -d ./output
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="rsync">
+        <div class="cmd-name">rsync <button class="copy-btn" data-cmd="rsync">📋 复制</button></div>
+        <div class="cmd-desc">快速增量文件传输（本地/远程同步）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">rsync</span> [选项] 来源 目标</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-a</span>  归档模式（保留权限、递归等）<br>
+            <span class="hl-cyan">-v</span>  显示详情<br>
+            <span class="hl-cyan">-z</span>  传输时压缩<br>
+            <span class="hl-cyan">--progress</span>  显示进度
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 本地备份（增量同步）</span><br>
+            <span class="prompt-symbol">$ </span>rsync -avh /data /backup/ --progress<br><br>
+            <span class="comment-line"># 远程备份（通过 SSH）</span><br>
+            <span class="prompt-symbol">$ </span>rsync -avz site/ user@server:/var/www/
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>rsync</strong> 比 scp 更聪明：只传输变化的部分，断点续传！备份神器。</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 用户管理 ========== -->
+  <section class="category-section" data-cat="user">
+    <div class="category-header">
+      <span class="cat-icon">👤</span>
+      <h2 style="color:var(--accent-cyan)">用户管理</h2>
+      <span class="cat-badge">5 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="useradd">
+        <div class="cmd-name">useradd <button class="copy-btn" data-cmd="useradd">📋 复制</button></div>
+        <div class="cmd-desc">创建新用户</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo useradd</span> [选项] 用户名</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-m</span>  创建 home 目录<br>
+            <span class="hl-cyan">-s /bin/bash</span>  指定 shell<br>
+            <span class="hl-cyan">-G group</span>  添加到附加组
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 创建用户并设置密码</span><br>
+            <span class="prompt-symbol">$ </span>sudo useradd -m -s /bin/bash alice<br>
+            <span class="prompt-symbol">$ </span>sudo passwd alice<br>
+            <span class="output-line">New password: </span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span><strong>adduser</strong>（交互式）比 useradd 更友好，自动创建 home 目录等。Debian 系的特色。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="passwd">
+        <div class="cmd-name">passwd <button class="copy-btn" data-cmd="passwd">📋 复制</button></div>
+        <div class="cmd-desc">修改用户密码</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">passwd</span> [用户名]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>passwd &nbsp;&nbsp;<span class="output-line"># 改自己的密码</span><br>
+            <span class="prompt-symbol">$ </span>sudo passwd alice &nbsp;&nbsp;<span class="output-line"># root 改别人密码</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="usermod">
+        <div class="cmd-name">usermod <button class="copy-btn" data-cmd="usermod">📋 复制</button></div>
+        <div class="cmd-desc">修改用户账户属性</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo usermod</span> [选项] 用户名</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 把用户加到 sudo 组（给管理员权限）</span><br>
+            <span class="prompt-symbol">$ </span>sudo usermod -aG sudo alice<br><br>
+            <span class="comment-line"># 锁定/解锁用户</span><br>
+            <span class="prompt-symbol">$ </span>sudo usermod -L bob &nbsp;&nbsp;<span class="output-line"># 锁定</span><br>
+            <span class="prompt-symbol">$ </span>sudo usermod -U bob &nbsp;&nbsp;<span class="output-line"># 解锁</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="userdel">
+        <div class="cmd-name">userdel <button class="copy-btn" data-cmd="userdel">📋 复制</button></div>
+        <div class="cmd-desc">删除用户</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">sudo userdel</span> [-r] 用户名</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 删除用户</span><br>
+            <span class="prompt-symbol">$ </span>sudo userdel alice<br><br>
+            <span class="comment-line"># 删除用户同时删除 home 目录</span><br>
+            <span class="prompt-symbol">$ </span>sudo userdel -r alice
+          </div>
+          <div class="tip">
+            <span class="tip-icon">⚠️</span>
+            <span><strong>-r</strong> 会删除用户的主目录和邮件池，确认后再操作。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="groups">
+        <div class="cmd-name">groups / groupadd <button class="copy-btn" data-cmd="groups">📋 复制</button></div>
+        <div class="cmd-desc">管理用户组</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block">
+            <span class="hl-green">groups</span> [用户名] &nbsp;&nbsp;# 查看用户属于哪些组<br>
+            <span class="hl-green">sudo groupadd</span> 组名 &nbsp;&nbsp;# 创建新组
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>groups zixu<br>
+            <span class="output-line">zixu : zixu sudo docker</span><br><br>
+            <span class="prompt-symbol">$ </span>sudo groupadd developers<br>
+            <span class="prompt-symbol">$ </span>sudo usermod -aG developers alice
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== 系统信息 ========== -->
+  <section class="category-section" data-cat="system">
+    <div class="category-header">
+      <span class="cat-icon">🖥️</span>
+      <h2 style="color:var(--accent-purple)">系统信息</h2>
+      <span class="cat-badge">5 条指令</span>
+    </div>
+    <div class="cmd-grid">
+      <article class="cmd-card" data-command="uname">
+        <div class="cmd-name">uname <button class="copy-btn" data-cmd="uname">📋 复制</button></div>
+        <div class="cmd-desc">查看系统内核信息</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">uname</span> [选项]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-a</span>  显示所有信息<br>
+            <span class="hl-cyan">-r</span>  内核版本
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>uname -a<br>
+            <span class="output-line">Linux LAPTOP 6.6.87.2-microsoft-standard-WSL2 #1 SMP x86_64 GNU/Linux</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="free">
+        <div class="cmd-name">free <button class="copy-btn" data-cmd="free">📋 复制</button></div>
+        <div class="cmd-desc">查看内存使用情况</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">free</span> [选项]</div>
+          <div class="detail-label">🔧 常用选项</div>
+          <div class="syntax-block">
+            <span class="hl-cyan">-h</span>  人类可读格式<br>
+            <span class="hl-cyan">-w</span>  更细化的内存分类
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>free -h<br>
+            <span class="output-line">              total  used  free  shared  buff/cache  available<br>Mem:          7.6G  2.1G  3.2G   0.1G      2.3G      5.0G<br>Swap:         2.0G  0.1G  1.9G</span>
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>看 <strong>available</strong>（可用内存）比 free 更有意义 — Linux 会用空闲内存做缓存。</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="lscpu">
+        <div class="cmd-name">lscpu <button class="copy-btn" data-cmd="lscpu">📋 复制</button></div>
+        <div class="cmd-desc">查看 CPU 详细信息</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">lscpu</span></div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>lscpu<br>
+            <span class="output-line">Architecture:        x86_64<br>CPU op-mode(s):      32-bit, 64-bit<br>CPU(s):              16<br>Thread(s) per core:  2<br>Core(s) per socket:  8<br>Model name:          AMD Ryzen 7 ...</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="lspci">
+        <div class="cmd-name">lspci <button class="copy-btn" data-cmd="lspci">📋 复制</button></div>
+        <div class="cmd-desc">列出所有 PCI 设备（显卡、网卡等）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">lspci</span></div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="prompt-symbol">$ </span>lspci | grep -i vga<br>
+            <span class="output-line">00:02.0 VGA compatible controller: Intel Corporation ...</span><br><br>
+            <span class="comment-line"># 详细显示</span><br>
+            <span class="prompt-symbol">$ </span>lspci -vv
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="dmesg">
+        <div class="cmd-name">dmesg <button class="copy-btn" data-cmd="dmesg">📋 复制</button></div>
+        <div class="cmd-desc">查看内核环形缓冲区的系统消息</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="syntax-block"><span class="hl-green">dmesg</span> [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="example-block">
+            <span class="comment-line"># 查硬件错误（U盘插入、驱动报错等）</span><br>
+            <span class="prompt-symbol">$ </span>dmesg | tail -20<br><br>
+            <span class="comment-line"># 实时跟踪内核消息</span><br>
+            <span class="prompt-symbol">$ </span>dmesg -w
+          </div>
+          <div class="tip">
+            <span class="tip-icon">💡</span>
+            <span>插了 U 盘没反应？<strong>dmesg | tail</strong> 看看内核有没有识别到！</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== NO RESULTS ========== -->
+  <div class="no-results" id="noResults">
+    <div class="nr-icon">🔍</div>
+    <p>没有找到匹配的指令<br><span style="font-size:13px;color:var(--text-muted)">试试其他关键词？</span></p>
+  </div>
+
+</main>
+
+<!-- ===================== TOAST ===================== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  🐧 Linux 指令学院 · 由 陈晖洁 制作<br>
+  <span style="font-size:12px;">命令千万条，安全第一条 &nbsp;·&nbsp; 使用 <code style="color:var(--accent-green);">--help</code> 查看详细文档</span>
+</footer>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+(function() {
+  'use strict';
+
+  /* ---------- CARD CLICK ---------- */
+  const cards = document.querySelectorAll('.cmd-card');
+  cards.forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('.copy-btn')) return;
+      e.stopPropagation();
+      this.classList.toggle('expanded');
+    });
+  });
+
+  /* ---------- COPY ---------- */
+  const copyBtns = document.querySelectorAll('.copy-btn');
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', async function(e) {
+      e.stopPropagation();
+      const cmd = this.dataset.cmd;
+      try {
+        await navigator.clipboard.writeText(cmd);
+        showToast(`✅ 已复制：${cmd}`);
+      } catch {
+        showToast('❌ 复制失败，请手动复制');
+      }
+    });
+  });
+
+  /* ---------- TABLE / CATEGORY FILTER ---------- */
+  const tabs = document.querySelectorAll('.nav-tab');
+  const sections = document.querySelectorAll('.category-section');
+
+  function filterCategories(cat) {
+    let hasAny = false;
+    sections.forEach(sec => {
+      if (cat === 'all' || sec.dataset.cat === cat) {
+        sec.classList.add('visible');
+        hasAny = true;
+      } else {
+        sec.classList.remove('visible');
+      }
+    });
+    return hasAny;
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      tabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const cat = this.dataset.cat;
+      filterCategories(cat);
+      applySearch(searchInput.value);
+    });
+  });
+
+  /* ---------- SEARCH ---------- */
+  const searchInput = document.getElementById('searchInput');
+  const noResults = document.getElementById('noResults');
+
+  function applySearch(query) {
+    const q = query.trim().toLowerCase();
+    const visibleSections = document.querySelectorAll('.category-section.visible');
+    let anyMatch = false;
+
+    visibleSections.forEach(sec => {
+      const sectionCards = sec.querySelectorAll('.cmd-card');
+      let sectionMatch = false;
+
+      sectionCards.forEach(card => {
+        const name = card.dataset.command || '';
+        const desc = card.querySelector('.cmd-desc')?.textContent || '';
+        const detail = card.querySelector('.cmd-detail')?.textContent || '';
+        const fullText = name + ' ' + desc + ' ' + detail;
+
+        if (!q || fullText.toLowerCase().includes(q)) {
+          card.style.display = '';
+          sectionMatch = true;
+          anyMatch = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Hide section if no cards match
+      if (q && !sectionMatch) {
+        sec.style.display = 'none';
+      } else {
+        sec.style.display = '';
+      }
+    });
+
+    noResults.classList.toggle('visible', !anyMatch && q !== '');
+  }
+
+  searchInput.addEventListener('input', applySearch);
+
+  /* ---------- KEYBOARD ---------- */
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+
+  /* ---------- RESIZE / GRID FALLBACK ---------- */
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) {
+    // No extra action needed, CSS handles it
+  }
+
+  console.log('🐧 Linux 指令学院已加载！');
+  console.log('💡 提示：按 Ctrl+F 快速搜索，点击卡片展开详情');
+})();
+</script>
+</body>
+</html>

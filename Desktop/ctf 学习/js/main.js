@@ -19,7 +19,7 @@ const sites = {
     'baidu-src': { name: '百度 SRC', url: 'https://bsrc.baidu.com', category: 'community', icon: '🎯' },
     'tencent-src': { name: '腾讯 SRC', url: 'https://security.tencent.com', category: 'community', icon: '🐧' },
     huoxian: { name: '火线安全', url: 'https://www.huoxian.cn', category: 'community', icon: '🔥' },
-    learnweb: { name: 'Web安全学习笔记', url: 'file:///C:/Users/ZiXuChen/Learn-Web-Hacking/build/html/index.html', category: 'community', icon: '📖' },
+    learnweb: { name: 'Web安全学习笔记', url: 'file:///C:/Users/xxx/Learn-Web-Hacking/build/html/index.html', category: 'community', icon: '📖' },
     
     // Writeup 平台
     writeupcn: { name: 'CTF WriteUp集合', url: 'https://github.com/ctf-wiki/ctf-wiki', category: 'writeup', icon: '📝' },
@@ -382,7 +382,7 @@ function toggleEvoCard(el) {
 
 // ==================== 🎯 Ceshiya 相关 ====================
 function openCeshiyaDir() {
-    window.open('file:///C:/Users/ZiXuChen/Downloads/ceshiya-master/ceshiya-master/', '_blank');
+    window.open('file:///C:/Users/xxx/Downloads/ceshiya-master/ceshiya-master/', '_blank');
 }
 function showCeshiyaTips() {
     showMascotMessage('打开命令行，cd 到 ceshiya-master 目录，然后执行 start.bat 或 npm run dev 就能启动啦！🎮');
@@ -477,11 +477,14 @@ document.addEventListener('keydown', function(e) {
         '2': 'ctf-platforms',
         '3': 'security-communities',
         '4': 'web-history',
-        '5': 'ceshiya',
-        '6': 'codefather',
-        '7': 'toolbox',
-        '8': 'ctf-types',
-        '9': 'roadmap'
+        '5': 'ctf-types',
+        '6': 'roadmap',
+        '7': 'ceshiya',
+        '8': 'toolbox',
+        '9': 'codefather',
+        '0': 'manual-linux',
+        '-': 'manual-git',
+        '=': 'manual-kali'
     };
 
     if (!e.ctrlKey && !e.metaKey && !e.altKey && navKeys[e.key]) {
@@ -736,5 +739,197 @@ init = function() {
     initNavDropdowns();
 };
 
+// ==================== 📚 指令速查手册通用交互 ====================
+function initCmdManual(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const catBtns = container.querySelectorAll('.cmd-cat-btn');
+    const catGroups = container.querySelectorAll('.cmd-cat-group');
+    const cards = container.querySelectorAll('.cmd-card');
+    const searchInput = container.querySelector('.cmd-search-input');
+    const noMatch = container.querySelector('.cmd-no-match');
+
+    // 分类筛选
+    catBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.dataset.cat;
+            catBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            catGroups.forEach(group => {
+                if (cat === 'all' || group.dataset.cat === cat) {
+                    group.classList.add('active');
+                } else {
+                    group.classList.remove('active');
+                }
+            });
+
+            // 重新搜索
+            if (searchInput && searchInput.value.trim()) {
+                doCmdSearch(container, searchInput.value);
+            }
+
+            // 滚动到第一个可见卡片
+            const firstVisible = container.querySelector('.cmd-cat-group.active');
+            if (firstVisible && cat !== 'all') {
+                firstVisible.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // 卡片展开/收起
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.cmd-card');
+        if (!card) return;
+        card.classList.toggle('open');
+    });
+
+    // 搜索
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            doCmdSearch(container, searchInput.value);
+        });
+
+        // Ctrl+F 聚焦搜索
+        container.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                // 检查是否在当前手册区域内
+                const activeManual = e.target.closest('.cmd-manual');
+                if (activeManual === container) {
+                    e.preventDefault();
+                    const inp = container.querySelector('.cmd-search-input');
+                    if (inp) { inp.focus(); inp.select(); }
+                }
+            }
+        });
+    }
+}
+
+function doCmdSearch(container, query) {
+    const q = query.trim().toLowerCase();
+    const activeGroups = container.querySelectorAll('.cmd-cat-group.active');
+    const noMatch = container.querySelector('.cmd-no-match');
+    let foundAny = false;
+
+    activeGroups.forEach(group => {
+        const cards = group.querySelectorAll('.cmd-card');
+        let groupMatch = false;
+
+        cards.forEach(card => {
+            const cmdName = card.dataset.command || '';
+            const desc = (card.querySelector('.cmd-desc')?.textContent || '') +
+                         (card.querySelector('.cmd-detail')?.textContent || '');
+            const full = cmdName + ' ' + desc;
+
+            if (!q || full.toLowerCase().includes(q)) {
+                card.style.display = '';
+                groupMatch = true;
+                foundAny = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        group.style.display = (q && !groupMatch) ? 'none' : '';
+    });
+
+    if (noMatch) {
+        const anyVisible = [...container.querySelectorAll('.cmd-cat-group.active')]
+            .some(g => g.style.display !== 'none');
+        noMatch.classList.toggle('show', !anyVisible && !!q);
+    }
+}
+
+// ==================== 📌 左侧导航滑轨 ====================
+function initSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const navItems = document.querySelectorAll('.sidebar-item[data-sidebar-target]');
+    const mobileToggle = document.getElementById('mobile-sidebar-toggle');
+    const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
+
+    if (!sidebar) return;
+
+    // 恢复折叠状态
+    const savedState = localStorage.getItem('sidebarCollapsed');
+    if (savedState === 'true') {
+        sidebar.classList.add('collapsed');
+        document.body.classList.add('sidebar-collapsed');
+        if (toggleBtn) toggleBtn.textContent = '▶';
+    }
+
+    // 桌面端折叠/展开
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            const collapsed = sidebar.classList.contains('collapsed');
+            toggleBtn.textContent = collapsed ? '▶' : '◀';
+            localStorage.setItem('sidebarCollapsed', collapsed);
+        });
+    }
+
+    // 移动端开关
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('mobile-open');
+            if (mobileOverlay) mobileOverlay.classList.toggle('show');
+        });
+    }
+    if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('mobile-open');
+            mobileOverlay.classList.remove('show');
+        });
+    }
+
+    // 导航项点击 → 滚动到目标
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = item.dataset.sidebarTarget;
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // 移动端点击后关闭
+            sidebar.classList.remove('mobile-open');
+            if (mobileOverlay) mobileOverlay.classList.remove('show');
+        });
+    });
+
+    // 滚动跟踪 → 高亮当前项
+    const sectionIds = [...navItems].map(item => item.dataset.sidebarTarget);
+    const observerOptions = { rootMargin: '-100px 0px -70% 0px' };
+
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navItems.forEach(item => {
+                    item.classList.toggle('active', item.dataset.sidebarTarget === entry.target.id);
+                });
+                // 滚动当前项到可见区域
+                const activeItem = sidebar.querySelector('.sidebar-item.active');
+                if (activeItem) {
+                    activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            }
+        });
+    }, observerOptions);
+
+    sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) scrollObserver.observe(el);
+    });
+}
+
 // ==================== 🚀 DOM 加载完成 ====================
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    initSidebar();
+    // 初始化三个指令手册
+    initCmdManual('manual-linux');
+    initCmdManual('manual-kali');
+    initCmdManual('manual-git');
+});
